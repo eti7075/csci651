@@ -1,3 +1,5 @@
+import pyshark
+
 # input.pcap
 
 # --- Output ---
