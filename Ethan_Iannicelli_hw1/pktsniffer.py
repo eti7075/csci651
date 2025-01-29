@@ -31,7 +31,6 @@ def get_ip_summary(packet):
     print(f"  Source IP Address: {ip_layer.src}")
     print(f"  Desticnation IP Address: {ip_layer.dst}")
   
-
 def get_encapsulated_packets_summary(packet):
   # Encapsulated Packets: TCP, UDP, or ICMP headers.
   if 'UDP' in packet:
@@ -80,6 +79,25 @@ def filter_by_icmp(packets):
 
 def filter_by_net(packets, net):
   pass
+
+def filter_packets(packets, filters):
+  if 'host' in filters:
+    packets = filter_by_host(packets, filters['host'])
+  if 'port' in filters:
+    packets = filter_by_port(packets, filters['port'])
+  if 'ip' in filters:
+    packets = filter_by_ip(packets, filters['ip'])
+  if 'tcp' in filters:
+    packets = filter_by_tcp(packets)
+  if 'udp' in filters:
+    packets = filter_by_udp(packets)
+  if 'icmp' in filters:
+    packets = filter_by_icmp(packets)
+  if 'net' in filters:
+    packets = filter_by_net(packets, filters['net'])
+  if 'c' in filters:
+    packets = packets[0:filters['c']]
+  return packets
 
 def main():
   # input.pcap as capture
