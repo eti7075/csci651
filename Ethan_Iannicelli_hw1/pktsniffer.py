@@ -1,7 +1,6 @@
 import pyshark
 
-# --- Output ---
-def get_packet_summary(packet):
+def get_eth_summary(packet):
   # Ethernet Header: Packet size, Destination MAC Address, 
   #   Source MAC Address, Ethertype
   if 'ETH' in packet:
@@ -12,6 +11,7 @@ def get_packet_summary(packet):
     print(f"  Source MAC Address: {eth_layer.src}")
     print(f"  Ethertype: {eth_layer.type}")
 
+def get_ip_summary(packet):
   # IP Header: Version, Header length, Type of service, Total length, 
   #   Identification, Flags, Fragment offset, Time to live, Protocol, 
   #   Header checksum, Source and Destination IP addresses.
@@ -31,6 +31,8 @@ def get_packet_summary(packet):
     print(f"  Source IP Address: {ip_layer.src}")
     print(f"  Desticnation IP Address: {ip_layer.dst}")
   
+
+def get_encapsulated_packets_summary(packet):
   # Encapsulated Packets: TCP, UDP, or ICMP headers.
   if 'UDP' in packet:
     udp_layer = packet.udp
@@ -43,6 +45,12 @@ def get_packet_summary(packet):
   if 'ICMP' in packet:
     icmp_layer = packet.udp
     print(icmp_layer)
+
+# --- Output ---
+def get_packet_summary(packet):
+  get_eth_summary(packet)
+  get_ip_summary(packet)
+  get_encapsulated_packets_summary(packet)
 
 def filter_by_host(packets, host):
   return [packet for packet in packets if packet.ip.src == host | packet.ip.dst == host]
