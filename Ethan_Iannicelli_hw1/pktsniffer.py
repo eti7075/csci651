@@ -39,11 +39,11 @@ def get_encapsulated_packets_summary(packet):
     print(udp_layer)
 
   if 'TCP' in packet:
-    tcp_layer = packet.udp
+    tcp_layer = packet.tcp
     print(tcp_layer)
 
   if 'ICMP' in packet:
-    icmp_layer = packet.udp
+    icmp_layer = packet.icmp
     print(icmp_layer)
 
 # --- Output ---
@@ -83,46 +83,49 @@ def filter_by_net(packets, net):
   return [packet for packet in packets if packet.ip.src.startswith(net) | packet.ip.dst.startswith(net)]
 
 def filter_packets(packets, filters):
-  if 'host' in filters:
-    packets = filter_by_host(packets, filters['host'])
-  if 'port' in filters:
-    packets = filter_by_port(packets, filters['port'])
-  if 'ip' in filters:
-    packets = filter_by_ip(packets, filters['ip'])
-  if 'tcp' in filters:
+  if filters["filter_type"] == "host":
+    packets = filter_by_host(packets, filters['filter_value'])
+  if filters["filter_type"] == "port":
+    packets = filter_by_port(packets, filters['filter_value'])
+  if filters["filter_type"] == "ip":
+    packets = filter_by_ip(packets, filters['filter_value'])
+  if filters["filter_type"] == "net":
+    packets = filter_by_net(packets, filters['filter_value'])
+  if filters["tcp"]:
     packets = filter_by_tcp(packets)
-  if 'udp' in filters:
+  if filters["udp"]:
     packets = filter_by_udp(packets)
-  if 'icmp' in filters:
+  if filters["icmp"]:
     packets = filter_by_icmp(packets)
-  if 'net' in filters:
-    packets = filter_by_net(packets, filters['net'])
-  if 'c' in filters:
-    packets = packets[0:filters['c']]
+  if filters["count"] != None:
+    packets = packets[0:filters["count"]]
   return packets
 
 def initialize_parser():
   parser = argparse.ArgumentParser("packet sniffer argument parser")
-  parser.add_argument("-r", type=str, help="relative filename address for the pcap file to be analyzed", required=True)
+  parser.add_argument("-r", "--read", type=str, help="relative filename address for the pcap file to be analyzed", required=True)
 
-  parser.add_argument("host", type=str, help="destination or source host address from a packets IP header", required=False)
-  parser.add_argument("port", type=str, help="destination or source port from a packets TRANSPORT header", required=False)
-  parser.add_argument("ip", type=str, help="version of the ip from a packets IP header", required=False)
-  parser.add_argument("tcp", action="store_true", help="does this packet contain a TCP header?", required=False)
-  parser.add_argument("udp", action="store_true", help="does this packet contain a UDP header?", required=False)
-  parser.add_argument("icmp", action="store_true", help="does this packet contain a ICMP header?", required=False)
-  parser.add_argument("-net", type=str, help="check if a packet belongs to the network address (ex: 192.168.1.x)", required=False)
-  
-  parser.add_argument("-c", type=str, help="final number of packets to be summarized after filtering", required=False)
+  parser.add_argument("filter_type", nargs="?", choices=["host", "port", "ip", "net"], help="type of the filter")
+  parser.add_argument("filter_value", nargs="?", help="Value for the selected filter")
+  parser.add_argument("-tcp", "--tcp", action="store_true", help="does this packet contain a TCP header?", required=False)
+  parser.add_argument("-udp", "--udp", action="store_true", help="does this packet contain a UDP header?", required=False)
+  parser.add_argument("-icmp", "--icmp", action="store_true", help="does this packet contain a ICMP header?", required=False)
+
+  parser.add_argument("-c", "--count", type=int, help="final number of packets to be summarized after filtering", required=False)
   return parser
   
 
 def main():
+
+  parser = initialize_parser()
+  args = vars(parser.parse_args())
+  print(args)
+  
   # input.pcap as capture
-  capture = pyshark.FileCapture('input.pcap')
+  capture = pyshark.FileCapture(args["read"])
 
   # reduced to array for testing, easy to change the size of the packets array
-  packets = [packet for packet in capture][0:1]
+  packets = filter_packets([packet for packet in capture], args)
 
   # summarize each packet
   for packet in packets:
