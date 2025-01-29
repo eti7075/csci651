@@ -1,4 +1,5 @@
 import pyshark
+import argparse
 
 def get_eth_summary(packet):
   # Ethernet Header: Packet size, Destination MAC Address, 
@@ -66,7 +67,7 @@ def filter_by_port(packets, port):
   return [packet for packet in packets if has_port(packet, port)]
 
 def filter_by_ip(packets, ip):
-  pass
+  return [packet for packet in packets if packet.version == ip]
 
 def filter_by_tcp(packets):
   return [packet for packet in packets if 'TCP' in packet]
@@ -78,7 +79,8 @@ def filter_by_icmp(packets):
   return [packet for packet in packets if 'TCP' not in packet and 'UDP' not in packet]
 
 def filter_by_net(packets, net):
-  pass
+  net = '.'.join(net.split('.')[0:2])
+  return [packet for packet in packets if packet.ip.src.startswith(net) | packet.ip.dst.startswith(net)]
 
 def filter_packets(packets, filters):
   if 'host' in filters:
@@ -98,6 +100,22 @@ def filter_packets(packets, filters):
   if 'c' in filters:
     packets = packets[0:filters['c']]
   return packets
+
+def initialize_parser():
+  parser = argparse.ArgumentParser("packet sniffer argument parser")
+  parser.add_argument("-r", type=str, help="relative filename address for the pcap file to be analyzed", required=True)
+
+  parser.add_argument("host", type=str, help="destination or source host address from a packets IP header", required=False)
+  parser.add_argument("port", type=str, help="destination or source port from a packets TRANSPORT header", required=False)
+  parser.add_argument("ip", type=str, help="version of the ip from a packets IP header", required=False)
+  parser.add_argument("tcp", action="store_true", help="does this packet contain a TCP header?", required=False)
+  parser.add_argument("udp", action="store_true", help="does this packet contain a UDP header?", required=False)
+  parser.add_argument("icmp", action="store_true", help="does this packet contain a ICMP header?", required=False)
+  parser.add_argument("-net", type=str, help="check if a packet belongs to the network address (ex: 192.168.1.x)", required=False)
+  
+  parser.add_argument("-c", type=str, help="final number of packets to be summarized after filtering", required=False)
+  return parser
+  
 
 def main():
   # input.pcap as capture
