@@ -145,7 +145,7 @@ main()
 
 # commands to make executable and run via command line:
 #   chmod +x pktsniffer.py
-#   mv pktsniffer.py /usr/local/bin/pktsniffer
+#   scp pktsniffer.py /usr/local/bin/pktsniffer
 #   pktsniffer -r file.pcap host 192.168.0.1
 
 # Alternatively, you can run it via python as:
