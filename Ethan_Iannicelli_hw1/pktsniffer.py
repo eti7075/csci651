@@ -44,6 +44,35 @@ def get_packet_summary(packet):
     icmp_layer = packet.udp
     print(icmp_layer)
 
+def filter_by_host(packets, host):
+  return [packet for packet in packets if packet.ip.src == host | packet.ip.dst == host]
+
+def has_port(packet, port):
+  if 'TCP' in packet:
+    return packet.tcp.src == port | packet.tcp.dst == port
+  elif 'UDP' in packet:
+    return packet.udp.src == port | packet.udp.dst == port
+  else:
+    return False
+
+def filter_by_port(packets, port):
+  return [packet for packet in packets if has_port(packet, port)]
+
+def filter_by_ip(packets, ip):
+  pass
+
+def filter_by_tcp(packets):
+  return [packet for packet in packets if 'TCP' in packet]
+
+def filter_by_udp(packets):
+  return [packet for packet in packets if 'UDP' in packet]
+
+def filter_by_icmp(packets):
+  return [packet for packet in packets if 'TCP' not in packet and 'UDP' not in packet]
+
+def filter_by_net(packets, net):
+  pass
+
 def main():
   # input.pcap as capture
   capture = pyshark.FileCapture('input.pcap')
