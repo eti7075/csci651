@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import pyshark
 import argparse
 
@@ -126,7 +127,6 @@ def initialize_parser():
   
 
 def main():
-
   parser = initialize_parser()
   args = vars(parser.parse_args())
   print(args)
@@ -142,3 +142,11 @@ def main():
     get_packet_summary(packet)
 
 main()
+
+# commands to make executable and run via command line:
+#   chmod +x pktsniffer.py
+#   mv pktsniffer.py /usr/local/bin/pktsniffer
+#   pktsniffer -r file.pcap host 192.168.0.1
+
+# Alternatively, you can run it via python as:
+#   python pktsniffer.py -r file.pcap host 192.168.0.1
