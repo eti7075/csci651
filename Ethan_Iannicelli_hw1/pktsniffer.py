@@ -82,6 +82,16 @@ def filter_by_net(packets, net):
   net = '.'.join(net.split('.')[0:2])
   return [packet for packet in packets if packet.ip.src.startswith(net) | packet.ip.dst.startswith(net)]
 
+# --- Filtering ---
+# support filtering based on the following
+#   host
+#   port
+#   ip
+#   tcp
+#   udp
+#   icmp
+#   net
+#   count
 def filter_packets(packets, filters):
   if filters["filter_type"] == "host":
     packets = filter_by_host(packets, filters['filter_value'])
@@ -132,24 +142,3 @@ def main():
     get_packet_summary(packet)
 
 main()
-
-
-
-# --- Filtering ---
-# support filtering based on the following
-#   host
-#   port
-#   ip
-#   tcp
-#   udp
-#   icmp
-#   net
-
-# use -c argument to limit number of packets analyzed
-
-# example: pktsniffer -r input.pcap -c 5 port 80
-
-# --- Tips ---
-# use argparse to parse command line inputs
-# keep stuff modular (might be reused in the future)
-# use git to show progress
