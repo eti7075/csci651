@@ -3,8 +3,12 @@ import pyshark
 import argparse
 
 def get_eth_summary(packet):
-  # Ethernet Header: Packet size, Destination MAC Address, 
-  #   Source MAC Address, Ethertype
+  """
+  Print selected ethernet header properties in a formatted manner
+
+  :param packet: required packet to be summarized
+  :type packet: pyshark packet
+  """
   if 'ETH' in packet:
     eth_layer = packet.eth
     print(f"Ethernet Header:")
@@ -14,9 +18,12 @@ def get_eth_summary(packet):
     print(f"  Ethertype: {eth_layer.type}")
 
 def get_ip_summary(packet):
-  # IP Header: Version, Header length, Type of service, Total length, 
-  #   Identification, Flags, Fragment offset, Time to live, Protocol, 
-  #   Header checksum, Source and Destination IP addresses.
+  """
+  Print selected ip header properties in a formatted manner
+
+  :param packet: required packet to be summarized
+  :type packet: pyshark packet
+  """
   if 'IP' in packet:
     ip_layer = packet.ip
     print("IP Header:")  
@@ -34,7 +41,13 @@ def get_ip_summary(packet):
     print(f"  Desticnation IP Address: {ip_layer.dst}")
   
 def get_encapsulated_packets_summary(packet):
-  # Encapsulated Packets: TCP, UDP, or ICMP headers.
+  """
+  Print any encapsulated packet(s) in a given packet (not specially
+  formatted, does not extract specific properties)
+
+  :param packet: required packet to be summarized
+  :type packet: pyshark packet
+  """
   if 'UDP' in packet:
     udp_layer = packet.udp
     print(udp_layer)
@@ -47,16 +60,43 @@ def get_encapsulated_packets_summary(packet):
     icmp_layer = packet.icmp
     print(icmp_layer)
 
-# --- Output ---
 def get_packet_summary(packet):
+  """
+  Print all available header summaries for a given packet
+
+  :param packet: required packet to be summarized
+  :type packet: pyshark packet
+  """
   get_eth_summary(packet)
   get_ip_summary(packet)
   get_encapsulated_packets_summary(packet)
 
 def filter_by_host(packets, host):
+  """
+  Filter all packets if they contain the host address in either the
+  packet ip source property or the packet destination property
+
+  :param packets: List of packets
+  :type packets: list[pyshark packet]
+  :param host: host to filter by
+  :type host: MAC address
+  :return: the filtered list
+  :rtype: list[pyshark packet]
+  """
   return [packet for packet in packets if packet.ip.src == host | packet.ip.dst == host]
 
 def has_port(packet, port):
+  """
+  Check if a packet has a port number in a encapsulated TCP
+  or UDP packet at the source or destination property
+
+  :param packet: the packet to be checked
+  :type packet: pyshark packet
+  :param port: the port number
+  :type port: Int
+  :return: the boolean value indicating if the packet has the port
+  :rtype: boolean
+  """
   if 'TCP' in packet:
     return packet.tcp.src == port | packet.tcp.dst == port
   elif 'UDP' in packet:
@@ -65,35 +105,94 @@ def has_port(packet, port):
     return False
 
 def filter_by_port(packets, port):
+  """
+  Filter all packets if they contain the port in either the
+  encapsulated packet source property or encapsulated packet
+  destination property
+
+  :param packets: List of packets
+  :type packets: list[pyshark packet]
+  :param port: port to filter by
+  :type host: Int
+  :return: the filtered list
+  :rtype: list[pyshark packet]
+  """
   return [packet for packet in packets if has_port(packet, port)]
 
 def filter_by_ip(packets, ip):
+  """
+  Filter all packets if they contain the ip version in the 
+  packet ip header
+
+  :param packets: List of packets
+  :type packets: list[pyshark packet]
+  :param ip: ip version to filter by
+  :type ip: Int
+  :return: the filtered list
+  :rtype: list[pyshark packet]
+  """
   return [packet for packet in packets if packet.version == ip]
 
 def filter_by_tcp(packets):
+  """
+  Filter all packets if they contain the same address in 
+  either the packet ip source or destination property
+
+  :param packets: List of packets
+  :type packets: list[pyshark packet]
+  :param net: net to filter by
+  :type net: MAC address
+  :return: the filtered list
+  :rtype: list[pyshark packet]
+  """
   return [packet for packet in packets if 'TCP' in packet]
 
 def filter_by_udp(packets):
+  """
+  Filter all packets if they contain an encapsulated tcp packet
+
+  :param packets: List of packets
+  :type packets: list[pyshark packet]
+  :return: the filtered list
+  :rtype: list[pyshark packet]
+  """
   return [packet for packet in packets if 'UDP' in packet]
 
 def filter_by_icmp(packets):
+  """
+  Filter all packets if they contain an encapsulated udp packet
+
+  :param packets: List of packets
+  :type packets: list[pyshark packet]
+  :return: the filtered list
+  :rtype: list[pyshark packet]
+  """
   return [packet for packet in packets if 'TCP' not in packet and 'UDP' not in packet]
 
 def filter_by_net(packets, net):
+  """
+  Filter all packets if they contain an encapsulated icmp packet
+
+  :param packets: List of packets
+  :type packets: list[pyshark packet]
+  :return: the filtered list
+  :rtype: list[pyshark packet]
+  """
   net = '.'.join(net.split('.')[0:2])
   return [packet for packet in packets if packet.ip.src.startswith(net) | packet.ip.dst.startswith(net)]
 
-# --- Filtering ---
-# support filtering based on the following
-#   host
-#   port
-#   ip
-#   tcp
-#   udp
-#   icmp
-#   net
-#   count
 def filter_packets(packets, filters):
+  """
+  This function uses all the filtering helper functions to filter 
+  a list of packets given a set of (active) filters
+
+  :param packets: list of packets
+  :type packets: list[pyshark packet]
+  :param filters: the filters to use in filtering the packets
+  :type filters: map<string, value>
+  :return: list of filtered packets
+  :rtype: list[pyshark packet]
+  """
   if filters["filter_type"] == "host":
     packets = filter_by_host(packets, filters['filter_value'])
   if filters["filter_type"] == "port":
@@ -113,6 +212,14 @@ def filter_packets(packets, filters):
   return packets
 
 def initialize_parser():
+  """
+  This function creates and defines the parser for the packet
+  sniffer program, including file arguments, filtering arguments,
+  and count arguments
+
+  :return: the initialized parser
+  :rtype: ArgParser
+  """
   parser = argparse.ArgumentParser("packet sniffer argument parser")
   parser.add_argument("-r", "--read", type=str, help="relative filename address for the pcap file to be analyzed", required=True)
 
@@ -126,7 +233,7 @@ def initialize_parser():
   return parser
   
 
-def main():
+def pktsniffer():
   parser = initialize_parser()
   args = vars(parser.parse_args())
   print(args)
@@ -141,7 +248,8 @@ def main():
   for packet in packets:
     get_packet_summary(packet)
 
-main()
+if __name__ == "__main__":
+  pktsniffer()
 
 # commands to make executable and run via command line:
 #   chmod +x pktsniffer.py

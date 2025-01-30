@@ -1,10 +1,7 @@
-# Configuration file for the Sphinx documentation builder.
-#
-# For the full list of built-in configuration values, see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
+import sys
+from pathlib import Path
 
-# -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+sys.path.insert(0, str(Path('../..').resolve()))
 
 project = 'PktSniffer'
 copyright = '2025, Ethan Iannicelli'
@@ -19,6 +16,10 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.imgconverter'
 ]
+
+latex_elements = {
+    'extraclassoptions': 'openany,oneside'  # Avoid blank pages in PDFs
+}
 
 templates_path = ['_templates']
 exclude_patterns = []
