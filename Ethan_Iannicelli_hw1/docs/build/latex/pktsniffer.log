@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.3.12)  29 JAN 2025 22:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2025.1.29)  30 JAN 2025 09:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -733,7 +733,7 @@ File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count324
 \l__pdf_internal_box=\box120
 )
-No file pktsniffer.aux.
+(./pktsniffer.aux)
 \openout1 = `pktsniffer.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 73.
@@ -754,6 +754,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 73.
 LaTeX Font Info:    ... okay on input line 73.
 LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 73.
 LaTeX Font Info:    ... okay on input line 73.
+
 (/usr/local/texlive/2024/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count325
@@ -803,7 +804,7 @@ tawesome5
 * paper: letterpaper
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: twoside 
+* modes: 
 * h-part:(L,W,R)=(72.26999pt, 469.75502pt, 72.26999pt)
 * v-part:(T,H,B)=(72.26999pt, 650.43001pt, 72.26999pt)
 * \paperwidth=614.295pt
@@ -825,18 +826,20 @@ tawesome5
 * \voffset=0.0pt
 * \mag=1000
 * \@twocolumnfalse
-* \@twosidetrue
-* \@mparswitchtrue
+* \@twosidefalse
+* \@mparswitchfalse
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 Package hyperref Info: Link coloring ON on input line 73.
+(./pktsniffer.out) (./pktsniffer.out)
 \@outlinefile=\write5
 \openout5 = `pktsniffer.out'.
 
 Package hyperref Info: Option `pageanchor' set `false' on input line 81.
 LaTeX Font Info:    Trying to load font information for T1+qhv on input line 81
 .
+
 (/usr/local/texlive/2024/texmf-dist/tex/latex/tex-gyre/t1qhv.fd
 File: t1qhv.fd 2009/09/25 v1.2 font definition file for T1/qhv
 )<<ot1.cmap>><<oml.cmap>><<oms.cmap>><<omx.cmap>>
@@ -854,59 +857,65 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
-al/texlive/2024/texmf-dist/fonts/enc/dvips/tex-gyre/q-ec.enc}] [2
-
-
-]
-No file pktsniffer.toc.
+al/texlive/2024/texmf-dist/fonts/enc/dvips/tex-gyre/q-ec.enc}] (./pktsniffer.to
+c)
 \tf@toc=\write6
 \openout6 = `pktsniffer.toc'.
 
-[1
+ [1
 
-] [2
+
 
 ]
-LaTeX Font Info:    Trying to load font information for T1+txtt on input line 8
-9.
- (/usr/local/texlive/2024/texmf-dist/tex/latex/txfonts/t1txtt.fd
+Chapter 1.
+LaTeX Font Info:    Trying to load font information for T1+txtt on input line 9
+3.
+(/usr/local/texlive/2024/texmf-dist/tex/latex/txfonts/t1txtt.fd
 File: t1txtt.fd 2000/12/15 v3.1
 )
+LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <10> not available
+(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 102.
+LaTeX Font Info:    Font shape `T1/txtt/m/it' in size <10> not available
+(Font)              Font shape `T1/txtt/m/sl' tried instead on input line 109.
+LaTeX Font Info:    Trying to load font information for TS1+qtm on input line 2
+10.
+
+(/usr/local/texlive/2024/texmf-dist/tex/latex/tex-gyre/ts1qtm.fd
+File: ts1qtm.fd 2009/09/25 v1.2 font definition file for TS1/qtm
+) [1
+
+
+{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}] [2] [3
+]
 No file pktsniffer.ind.
-[1] (./pktsniffer.aux)
+[4] (./pktsniffer.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `pktsniffer.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `pktsniffer.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
+Package rerunfilecheck Info: File `pktsniffer.out' has not changed.
+(rerunfilecheck)             Checksum: C88718B133E2B041B0545871F374CCA8;116.
  ) 
 Here is how much of TeX's memory you used:
- 19695 strings out of 474116
- 351681 string characters out of 5743682
- 1927187 words of memory out of 5000000
- 41692 multiletter control sequences out of 15000+600000
- 595126 words of font info for 63 fonts, out of 8000000 for 9000
+ 19796 strings out of 474116
+ 353540 string characters out of 5743682
+ 1941187 words of memory out of 5000000
+ 41755 multiletter control sequences out of 15000+600000
+ 601881 words of font info for 68 fonts, out of 8000000 for 9000
  1142 hyphenation exceptions out of 8191
- 72i,11n,83p,1199b,517s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 72i,11n,83p,1199b,687s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/tex-gyre/qhvb.pfb></us
 r/local/texlive/2024/texmf-dist/fonts/type1/public/tex-gyre/qhvbi.pfb></usr/loc
-al/texlive/2024/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb></usr/local/tex
-live/2024/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb>
-Output written on pktsniffer.pdf (5 pages, 69986 bytes).
+al/texlive/2024/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb></usr/local/tex
+live/2024/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb></usr/local/texlive/2
+024/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb></usr/local/texlive/2024/t
+exmf-dist/fonts/type1/public/txfonts/t1xbtt.pfb></usr/local/texlive/2024/texmf-
+dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/local/texlive/2024/texmf-dist/f
+onts/type1/public/txfonts/t1xtt.pfb>
+Output written on pktsniffer.pdf (6 pages, 130865 bytes).
 PDF statistics:
- 52 PDF objects out of 1000 (max. 8388607)
- 35 compressed objects within 1 object stream
- 6 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 100 PDF objects out of 1000 (max. 8388607)
+ 77 compressed objects within 1 object stream
+ 23 named destinations out of 1000 (max. 500000)
+ 29 words of extra memory for PDF output out of 10000 (max. 10000000)
 
