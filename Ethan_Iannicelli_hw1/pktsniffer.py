@@ -24,6 +24,13 @@ def get_ip_summary(packet):
   :param packet: required packet to be summarized
   :type packet: pyshark packet
   """
+  if 'IPV6' in packet:
+    ip_layer = packet.ipv6
+    print("IP Header:")  
+    print(f"  Version: {ip_layer.version}")
+    print(f"  Source IP Address: {ip_layer.src}")
+    print(f"  Desticnation IP Address: {ip_layer.dst}")
+  
   if 'IP' in packet:
     ip_layer = packet.ip
     print("IP Header:")  
@@ -56,8 +63,8 @@ def get_encapsulated_packets_summary(packet):
     tcp_layer = packet.tcp
     print(tcp_layer)
 
-  if 'ICMP' in packet:
-    icmp_layer = packet.icmp
+  if 'ICMPv6' in packet:
+    icmp_layer = packet.icmpv6
     print(icmp_layer)
 
 def get_packet_summary(packet):
@@ -83,7 +90,7 @@ def filter_by_host(packets, host):
   :return: the filtered list
   :rtype: list[pyshark packet]
   """
-  return [packet for packet in packets if packet.ip.src == host | packet.ip.dst == host]
+  return [packet for packet in packets if ('IP' in packet and (packet.ip.src == host or packet.ip.dst == host)) or ('IPV6' in packet and (packet.ipv6.src == host or packet.ipv6.dst == host))]
 
 def has_port(packet, port):
   """
@@ -98,9 +105,9 @@ def has_port(packet, port):
   :rtype: boolean
   """
   if 'TCP' in packet:
-    return packet.tcp.src == port | packet.tcp.dst == port
+    return packet.tcp.srcport == port or packet.tcp.dstport == port
   elif 'UDP' in packet:
-    return packet.udp.src == port | packet.udp.dst == port
+    return packet.udp.srcport == port or packet.udp.dstport == port
   else:
     return False
 
@@ -131,7 +138,7 @@ def filter_by_ip(packets, ip):
   :return: the filtered list
   :rtype: list[pyshark packet]
   """
-  return [packet for packet in packets if packet.version == ip]
+  return [packet for packet in packets if ('IP' in packet and packet.ip.version == ip) or ('IPV6' in packet and packet.ipv6.version == ip)]
 
 def filter_by_tcp(packets):
   """
@@ -179,7 +186,7 @@ def filter_by_net(packets, net):
   :rtype: list[pyshark packet]
   """
   net = '.'.join(net.split('.')[0:2])
-  return [packet for packet in packets if packet.ip.src.startswith(net) | packet.ip.dst.startswith(net)]
+  return [packet for packet in packets if ('IP' in packet and (packet.ip.src.startswith(net) or packet.ip.dst.startswith(net))) or ('IPV6' in packet and (packet.ipv6.src.startswith(net) or packet.ipv6.dst.startswith(net)))]
 
 def filter_packets(packets, filters):
   """
