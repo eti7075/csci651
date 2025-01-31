@@ -1,0 +1,17 @@
+a56deec7e4911c9da11380d40a98daf49087a1a1 - ethaniannicelli, 2025-01-31 - small properties bug fixes, created report showing wiresharks output vs mine
+52fea8d04f85b809f3113b376552e1cbd9d95328 - eiannicelli, 2025-01-30 - docs
+f1ce1ac964cc269579da505efffa9fbf2a58e4a6 - eiannicelli, 2025-01-30 - use autodocs and img converter to generate docs and make to pdf
+8df553cd3f19419285e5190fa274aff0fb71ecf8 - eiannicelli, 2025-01-29 - init sphinx
+604dc5708367acf3b6b818b6b2f2d35fcb248888 - eiannicelli, 2025-01-29 - added sphinx
+33900d82bc2829a57aa1f8fb5816dbb8c0060cc8 - eiannicelli, 2025-01-29 - updated readme with instructions and input
+f69d240e25572c35ac37b769369ba7d2221537f7 - ethaniannicelli, 2025-01-29 - made executable and added instructions
+0802a4c815d8a7d9c7b6a47a95db531e78024cec - ethaniannicelli, 2025-01-29 - move comments
+6fde411eb4c5b63fd7cacbb1f9860e972fe5b087 - ethaniannicelli, 2025-01-29 - correct arg parser
+79a56ec13c05e4c7dde50f8381034b6e94cec8d2 - ethaniannicelli, 2025-01-29 - added parser initializtion function
+c15ee67bd7e9f051e8ec6ad0e6836061e4b7bd78 - ethaniannicelli, 2025-01-28 - master filtering function
+c4bb93b7b31a090d68c03d057a3543705cab6642 - ethaniannicelli, 2025-01-28 - extracted header summary to separete functions
+765c6a30d54b67fd8501757bde03198ded67f0a7 - ethaniannicelli, 2025-01-28 - created filtering methods for host, port, tcp, udp, and icmp
+196bf6b3394e54ef30a1dffa77383bab01066b74 - ethaniannicelli, 2025-01-28 - create packet summary function
+fff5cdef8921295c8db364ef0074b7d082171707 - eiannicelli, 2025-01-28 - added pyshark to project
+66b59886daed707ebd2366401551b947582d18b7 - ethaniannicelli, 2025-01-27 - outline requirements, create input.pcap
+15b4ece50fa5acc2af2607f16aafc163b774af42 - eiannicelli, 2025-01-27 - initial commit
