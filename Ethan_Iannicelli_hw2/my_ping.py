@@ -8,20 +8,29 @@ import select
 import struct
 
 ICMP_ECHO_REQUEST = 8
+ICMP_ECHO_RESPONSE = 0
 
-def checksum(source_string):
+def checksum(data):
+    """
+    Creates the checksum for a given data for icmp packet
+
+    :param data: the input data for the checksum
+    :type data: String
+    :return: calculated checksum
+    :rtype: bitstring
+    """
     sum = 0
-    count_to = (len(source_string) // 2) * 2
+    count_to = (len(data) // 2) * 2
     count = 0
 
     while count < count_to:
-        this_val = source_string[count] + (source_string[count + 1] << 8)
+        this_val = data[count] + (data[count + 1] << 8)
         sum = sum + this_val
         sum = sum & 0xffffffff
         count = count + 2
 
-    if count_to < len(source_string):
-        sum = sum + source_string[count]
+    if count_to < len(data):
+        sum = sum + data[count]
         sum = sum & 0xffffffff
 
     sum = (sum >> 16) + (sum & 0xffff)
@@ -32,15 +41,33 @@ def checksum(source_string):
     return answer
 
 def create_packet(id, size):
+    """
+    Create a packet with a given id and of a given size
+
+    :param id: id of the new packet
+    :type id: string
+    :param size: size of the new packet
+    :type size: int
+    :return: the new icmp packet
+    :rtype: network packet
+    """
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, 0, id, 1)
-    data = bytes(size)  # 48-byte payload
-    my_checksum = checksum(header + data)
-    
-    # Recreate header with correct checksum
+    data = bytes(size)  # simulate packet of size: {size}
+    my_checksum = checksum(header + data) # recalculate checksum
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, socket.htons(my_checksum), id, 1)
     return header + data
 
 def send_ping(target, packetsize):
+    """
+    Send a recieve a packet to a given target (of a given packetsize)
+
+    :param target: the target destination
+    :type target: string
+    :param packetsize: size of packets to be used as the pings
+    :type packetsize: int
+    :return: status of this ping
+    :rtype: boolean
+    """
     success = False
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
@@ -53,11 +80,11 @@ def send_ping(target, packetsize):
         if response:
             ip, rtt, rsize = response
             print(f"{rsize} bytes from {ip}: time={rtt:.2f}ms")
-            success = True
+            success = True # indicate a successful ping response
         else:
-            print("Request timed out") 
+            print("request timed out") 
     except Exception as e:
-        print(f"error in ping: {e}")
+        print(f"error during ping attempt: {e}")
     finally:
         sock.close()
 
