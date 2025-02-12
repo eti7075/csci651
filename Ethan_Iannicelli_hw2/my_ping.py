@@ -4,7 +4,6 @@ import time
 import signal
 import socket
 import os
-import select
 import struct
 
 ICMP_ECHO_REQUEST = 8
@@ -75,7 +74,7 @@ def send_ping(target, packetsize):
         packet = create_packet(packet_id, packetsize)
 
         sock.sendto(packet, (target, 1)) # (ip_address, port_number)
-        response = receive_ping(sock, packet_id)
+        response = receive_ping(sock, packet_id, packetsize)
 
         if response:
             ip, rtt, rsize = response
@@ -90,32 +89,48 @@ def send_ping(target, packetsize):
 
     return success
 
-def receive_ping(sock, packet_id, timeout=10):
-    start_time = time.time()
+def receive_ping(sock, packet_id, packetsize, timeout=10):
+    """
+    recieve a icmp ping echo response. the socket and packet_id are provided, so we
+    know what to look for. A default timeout of 10 seconds is also applied, which should be plenty
+    for any address that is known to be online
 
-    while True:
+    :param sock: the socket that is prepared to accept the echo response
+    :type sock: socket
+    :param packet_id: id of the incoming echo response packet
+    :type packet_id: string
+    :return: a tuple of the target address, rtt, and size of icmp packet
+    :rtype: tuple(string, double, int)
+    """
+    # measure rtt from the point at which we are trying to recieve the echo response
+    start_time = time.time()
+    while True: # loop until response is received
         elapsed_time = time.time() - start_time
         remaining_time = timeout - elapsed_time
-        
         if remaining_time <= 0:
-            return None  # Timeout
+            return None  # Check for timeout - response took too long to return
 
-        ready = select.select([sock], [], [], remaining_time)
-        if not ready[0]:  
-            return None  # Timeout
-
-        recv_packet, addr = sock.recvfrom(1024)
+        # recieve a packet as big as 28 + icmp packet size
+        # handle the IP header and icmp header
+        recv_packet, addr = sock.recvfrom(packetsize + 28) 
         recv_time = time.time()
 
         # Extract ICMP Header from the received packet (skip the IP header)
         icmp_header = recv_packet[20:28]  # ICMP header is located after the 20-byte IP header
         icmp_type, code, checksum, response_id, sequence = struct.unpack("bbHHh", icmp_header)
 
-        if icmp_type == 0 and response_id == packet_id:  # ICMP type 0 = Echo Reply
+        if icmp_type == ICMP_ECHO_RESPONSE and response_id == packet_id:
             round_trip_time = (recv_time - start_time) * 1000  # Convert to milliseconds
             return addr[0], round_trip_time, len(recv_packet) - 28 # Return sender IP, RTT and ICMP response echo size
 
 def initialize_parser():
+    """
+    initialize the parser for this program. The only required argument is the 'target' which is the target ip address
+    to be pinged. Optional arguments include count, wait, packetsize, and timeout
+
+    :return: fully initialized parser
+    :rtype: parser
+    """
     parser = argparse.ArgumentParser("my_ping argument parser")
     parser.add_argument("target", type=str, help="the target to be pinged")
     parser.add_argument("-c", "--count", type=int, help="max number of packets to send", required=False)
@@ -125,6 +140,10 @@ def initialize_parser():
     return parser
 
 def timeout_handler(signum, frame):
+    """
+    handler for a program timeout. calls os._exit() to avoid raising an error, as this
+    can be called as part of an expected functionality
+    """
     print("Exited due to timeout")
     os._exit(1)
 
@@ -142,9 +161,10 @@ def my_ping():
         signal.alarm(timeout) 
 
     echo = 0
-    while (echo != count):
+    while (True):
         status = send_ping(args["target"], packetsize)
         echo += 1 if status else 0
+        if (echo == count): break
         time.sleep(wait)
 
 if __name__ == "__main__":
