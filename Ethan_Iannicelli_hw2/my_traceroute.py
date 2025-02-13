@@ -4,8 +4,11 @@ import socket
 import time
 
 TRACEROUTE_PORT = 33434
+DEFAULT_NQUERIES = 3
+DEFAULT_MAX_HOPS = 30
+DEFAULT_WAIT_TIMEOUT = 5
 
-def traceroute(nqueries, destination, numerical_flag=False, max_hops=64, timeout=2):
+def traceroute(nqueries, destination, numerical_flag=False, max_hops=DEFAULT_MAX_HOPS, timeout=DEFAULT_WAIT_TIMEOUT):
     destination_ip = socket.gethostbyname(destination)
     port = TRACEROUTE_PORT 
     ttl = 1
@@ -35,7 +38,7 @@ def traceroute(nqueries, destination, numerical_flag=False, max_hops=64, timeout
                 probe_output += " * "
             else:
                 name_output = output(numerical_flag, curr_addr, ttl)
-                elapsed = round((end-start) * 1000, 3)
+                elapsed = round((end-start) * 1000, 3) # convert to ms
                 probe_output += f" {elapsed}ms "
             finally:
                 recv_socket.close()
@@ -77,7 +80,7 @@ def my_traceroute():
     parser = initialize_parser()
     args = vars(parser.parse_args())
 
-    nqueries = args["nqueries"] if args["nqueries"] else 3
+    nqueries = args["nqueries"] if args["nqueries"] else DEFAULT_NQUERIES
     tr = traceroute(nqueries, args["target"], numerical_flag=args["numerical"])
 
     if args["summary"]:
