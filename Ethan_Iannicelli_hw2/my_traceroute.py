@@ -3,12 +3,30 @@ import argparse
 import socket
 import time
 
+# default values taken from the traceroute documentation online
 TRACEROUTE_PORT = 33434
 DEFAULT_NQUERIES = 3
 DEFAULT_MAX_HOPS = 30
 DEFAULT_WAIT_TIMEOUT = 5
 
 def traceroute(nqueries, destination, numerical_flag=False, max_hops=DEFAULT_MAX_HOPS, timeout=DEFAULT_WAIT_TIMEOUT):
+    """
+    performs a traceroute operation to a specified target. for each hop, we make nqueries attempts to 
+    retrieve a response from the next target in the traceroute path. 
+
+    :param nqueries: the number of probes to send at each level. functional default is 3
+    :type nqueries: int
+    :param destination: target final ip address
+    :type destination: string
+    :param numerical_flag: determines how the ip address is printed
+    :type numerical_flag: boolean
+    :param max_hops: maximum number of expected hops to reach target
+    :type max_hops: int
+    :param timeout: timeout for each probe:
+    :type timeout: int
+    :return: a map containing the number of probes unanswered at each hops
+    :rtype: map<int, int>
+    """
     destination_ip = socket.gethostbyname(destination)
     port = TRACEROUTE_PORT 
     ttl = 1
@@ -52,7 +70,15 @@ def traceroute(nqueries, destination, numerical_flag=False, max_hops=DEFAULT_MAX
 
     return unanswered_counts
 
-def output(numerical_flag, addr, ttl):
+def output(numerical_flag, addr):
+    """
+    prints the formatted address of the current hop
+
+    :param numerical_flag: if true, only print the ip address numbers
+    :type numerical_flag: boolean
+    :param addr: address of the hop
+    :type addr: str
+    """
     if numerical_flag:
         return f"{addr} "
     else:
@@ -62,13 +88,24 @@ def output(numerical_flag, addr, ttl):
             hostname = addr
         return f"{hostname} ({addr}) "
 
-
 def summarize(traceroute_summary):
+    """
+    prints a summary of the number of probes left unanswered at each hop
+
+    :param traceroute_summary: a map containing the raw for of unanswered probes per hop
+    :type traceroute_summary: map<int, int>
+    """
     print("\nNumber of unanswered probes at each hop: ")
     for hop, _ in enumerate(traceroute_summary):
         print(f"Hop: {hop + 1} | Probes Lost: {traceroute_summary[hop + 1]}")
 
 def initialize_parser():
+    """
+    initialize the parser for the traceroute program
+
+    :return: new parser
+    :rtype: argparse.parser
+    """
     parser = argparse.ArgumentParser("my_traceroute argument parser")
     parser.add_argument("target", type=str, help="the target of the traceroute")
     parser.add_argument("-n", "--numerical", action="store_true", help="print hop addresses numerically rather than symbolically and numerically", required=False)
@@ -77,6 +114,9 @@ def initialize_parser():
     return parser
 
 def my_traceroute():
+    """
+    main function for the traceroute program
+    """
     parser = initialize_parser()
     args = vars(parser.parse_args())
 

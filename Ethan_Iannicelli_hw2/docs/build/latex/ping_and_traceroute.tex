@@ -64,7 +64,7 @@
 
 
 \title{ping\_and\_traceroute}
-\date{Feb 12, 2025}
+\date{Feb 14, 2025}
 \release{}
 \author{Ethan Iannicelli}
 \newcommand{\sphinxlogo}{\vbox{}}
@@ -286,6 +286,147 @@ To handle a timeout event, use the \sphinxcode{\sphinxupquote{timeout\_handler()
 \sphinxAtStartPar
 handler for a program timeout. calls os.\_exit() to avoid raising an error, as this
 can be called as part of an expected functionality
+
+\end{fulllineitems}
+
+
+
+\chapter{Traceroute Summary}
+\label{\detokenize{index:traceroute-summary}}
+\sphinxAtStartPar
+To format the output for a traceroute address hop, use the \sphinxcode{\sphinxupquote{output()}} function:
+\index{output() (in module my\_traceroute)@\spxentry{output()}\spxextra{in module my\_traceroute}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:my_traceroute.output}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{my\_traceroute.}}\sphinxbfcode{\sphinxupquote{output}}}
+{\sphinxparam{\DUrole{n}{numerical\_flag}}\sphinxparamcomma \sphinxparam{\DUrole{n}{addr}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+prints the formatted address of the current hop
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{numerical\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{boolean}}) \textendash{} if true, only print the ip address numbers
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{addr}} (\sphinxstyleliteralemphasis{\sphinxupquote{str}}) \textendash{} address of the hop
+
+\end{itemize}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\sphinxAtStartPar
+To output a summary of the probes left unanswered at each hop, use
+the \sphinxcode{\sphinxupquote{summarize()}} function:
+\index{summarize() (in module my\_traceroute)@\spxentry{summarize()}\spxextra{in module my\_traceroute}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:my_traceroute.summarize}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{my\_traceroute.}}\sphinxbfcode{\sphinxupquote{summarize}}}
+{\sphinxparam{\DUrole{n}{traceroute\_summary}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+prints a summary of the number of probes left unanswered at each hop
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{traceroute\_summary}} (\sphinxstyleliteralemphasis{\sphinxupquote{map\textless{}int}}\sphinxstyleliteralemphasis{\sphinxupquote{, }}\sphinxstyleliteralemphasis{\sphinxupquote{int\textgreater{}}}) \textendash{} a map containing the raw for of unanswered probes per hop
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\sphinxAtStartPar
+To perform a traceroute operation to a target address, use
+the \sphinxcode{\sphinxupquote{traceroute()}} function:
+\index{traceroute() (in module my\_traceroute)@\spxentry{traceroute()}\spxextra{in module my\_traceroute}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:my_traceroute.traceroute}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{my\_traceroute.}}\sphinxbfcode{\sphinxupquote{traceroute}}}
+{\sphinxparam{\DUrole{n}{nqueries}}\sphinxparamcomma \sphinxparam{\DUrole{n}{destination}}\sphinxparamcomma \sphinxparam{\DUrole{n}{numerical\_flag}\DUrole{o}{=}\DUrole{default_value}{False}}\sphinxparamcomma \sphinxparam{\DUrole{n}{max\_hops}\DUrole{o}{=}\DUrole{default_value}{30}}\sphinxparamcomma \sphinxparam{\DUrole{n}{timeout}\DUrole{o}{=}\DUrole{default_value}{5}}}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+performs a traceroute operation to a specified target. for each hop, we make nqueries attempts to
+retrieve a response from the next target in the traceroute path.
+\begin{quote}\begin{description}
+\sphinxlineitem{Parameters}\begin{itemize}
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{nqueries}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}) \textendash{} the number of probes to send at each level. functional default is 3
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{destination}} (\sphinxstyleliteralemphasis{\sphinxupquote{string}}) \textendash{} target final ip address
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{numerical\_flag}} (\sphinxstyleliteralemphasis{\sphinxupquote{boolean}}) \textendash{} determines how the ip address is printed
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{max\_hops}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}) \textendash{} maximum number of expected hops to reach target
+
+\item {} 
+\sphinxAtStartPar
+\sphinxstyleliteralstrong{\sphinxupquote{timeout}} (\sphinxstyleliteralemphasis{\sphinxupquote{int}}) \textendash{} timeout for each probe:
+
+\end{itemize}
+
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+a map containing the number of probes unanswered at each hops
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+map\textless{}int, int\textgreater{}
+
+\end{description}\end{quote}
+
+\end{fulllineitems}
+
+
+\sphinxAtStartPar
+To create and initialize the parser for the traceroute program,
+use the \sphinxcode{\sphinxupquote{initialize\_parser()}} function:
+\index{initialize\_parser() (in module my\_traceroute)@\spxentry{initialize\_parser()}\spxextra{in module my\_traceroute}}
+
+\begin{fulllineitems}
+\phantomsection\label{\detokenize{index:my_traceroute.initialize_parser}}
+\pysigstartsignatures
+\pysiglinewithargsret
+{\sphinxcode{\sphinxupquote{my\_traceroute.}}\sphinxbfcode{\sphinxupquote{initialize\_parser}}}
+{}
+{}
+\pysigstopsignatures
+\sphinxAtStartPar
+initialize the parser for the traceroute program
+\begin{quote}\begin{description}
+\sphinxlineitem{Returns}
+\sphinxAtStartPar
+new parser
+
+\sphinxlineitem{Return type}
+\sphinxAtStartPar
+argparse.parser
+
+\end{description}\end{quote}
 
 \end{fulllineitems}
 

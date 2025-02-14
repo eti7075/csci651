@@ -30,6 +30,28 @@ To handle a timeout event, use the ``timeout_handler()`` function:
 
 .. autofunction:: my_ping.timeout_handler
 
+Traceroute Summary
+------------------
+
+To format the output for a traceroute address hop, use the ``output()`` function:
+
+.. autofunction:: my_traceroute.output
+
+To output a summary of the probes left unanswered at each hop, use
+the ``summarize()`` function:
+
+.. autofunction:: my_traceroute.summarize
+
+To perform a traceroute operation to a target address, use
+the ``traceroute()`` function:
+
+.. autofunction:: my_traceroute.traceroute
+
+To create and initialize the parser for the traceroute program,
+use the ``initialize_parser()`` function:
+
+.. autofunction:: my_traceroute.initialize_parser
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

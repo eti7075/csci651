@@ -1,0 +1,34 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter C
+  \item \spxentry{checksum()}\spxextra{in module my\_ping}, \hyperpage{1}
+  \item \spxentry{create\_packet()}\spxextra{in module my\_ping}, \hyperpage{1}
+
+  \indexspace
+  \bigletter I
+  \item \spxentry{initialize\_parser()}\spxextra{in module my\_ping}, \hyperpage{2}
+  \item \spxentry{initialize\_parser()}\spxextra{in module my\_traceroute}, \hyperpage{3}
+
+  \indexspace
+  \bigletter O
+  \item \spxentry{output()}\spxextra{in module my\_traceroute}, \hyperpage{3}
+
+  \indexspace
+  \bigletter R
+  \item \spxentry{receive\_ping()}\spxextra{in module my\_ping}, \hyperpage{1}
+
+  \indexspace
+  \bigletter S
+  \item \spxentry{send\_ping()}\spxextra{in module my\_ping}, \hyperpage{1}
+  \item \spxentry{summarize()}\spxextra{in module my\_traceroute}, \hyperpage{3}
+
+  \indexspace
+  \bigletter T
+  \item \spxentry{timeout\_handler()}\spxextra{in module my\_ping}, \hyperpage{2}
+  \item \spxentry{traceroute()}\spxextra{in module my\_traceroute}, \hyperpage{3}
+
+\end{sphinxtheindex}

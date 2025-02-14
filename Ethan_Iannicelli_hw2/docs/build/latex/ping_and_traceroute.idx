@@ -4,3 +4,7 @@
 \indexentry{receive\_ping() (in module my\_ping)@\spxentry{receive\_ping()}\spxextra{in module my\_ping}|hyperpage}{1}
 \indexentry{initialize\_parser() (in module my\_ping)@\spxentry{initialize\_parser()}\spxextra{in module my\_ping}|hyperpage}{2}
 \indexentry{timeout\_handler() (in module my\_ping)@\spxentry{timeout\_handler()}\spxextra{in module my\_ping}|hyperpage}{2}
+\indexentry{output() (in module my\_traceroute)@\spxentry{output()}\spxextra{in module my\_traceroute}|hyperpage}{3}
+\indexentry{summarize() (in module my\_traceroute)@\spxentry{summarize()}\spxextra{in module my\_traceroute}|hyperpage}{3}
+\indexentry{traceroute() (in module my\_traceroute)@\spxentry{traceroute()}\spxextra{in module my\_traceroute}|hyperpage}{3}
+\indexentry{initialize\_parser() (in module my\_traceroute)@\spxentry{initialize\_parser()}\spxextra{in module my\_traceroute}|hyperpage}{3}
