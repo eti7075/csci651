@@ -55,7 +55,7 @@ def traceroute(nqueries, destination, numerical_flag=False, max_hops=DEFAULT_MAX
                 unanswered += 1
                 probe_output += " * "
             else:
-                name_output = output(numerical_flag, curr_addr, ttl)
+                name_output = output(numerical_flag, curr_addr)
                 elapsed = round((end-start) * 1000, 3) # convert to ms
                 probe_output += f" {elapsed}ms "
             finally:
