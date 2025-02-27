@@ -1,0 +1,9 @@
+81ef283 created report for output
+b807b5c moved pdf report
+32fd01e finish documentation for traceroute program
+61b64fe refactored and commeted magic numbers
+a8f501e finished output formatting for traceroute, added probe number modification
+b30180a documentation for ping
+6e0c473 started commenting ping
+902d6be create ping function, started traceroute
+ba76e3e started hw2 - stubb out basic class function
