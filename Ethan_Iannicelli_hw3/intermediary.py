@@ -46,16 +46,15 @@ def simulate_delay():
 
 def handle_packet(packet, packet_queue, inter_socket, forward_address):
     """Handle the packet: apply network conditions and forward to receiver."""
-    # packet = simulate_loss(packet)
-    # packet = simulate_corruption(packet)
-    # simulate_delay()
-    packet_queue.append(packet)
-    # packet_queue = simulate_reordering(packet_queue)
+    packet = simulate_loss(packet)
+    packet = simulate_corruption(packet)
+    simulate_delay()
+    packet_queue.append((packet, forward_address))
+    packet_queue = simulate_reordering(packet_queue)
 
-
-    for pkt in packet_queue:
-        if pkt is not None:
-            inter_socket.sendto(pkt, forward_address)
+    pkt, addr = packet_queue.pop(0)
+    if pkt is not None:
+        inter_socket.sendto(pkt, addr)
 
     print("packet handled")
 

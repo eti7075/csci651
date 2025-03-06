@@ -20,15 +20,8 @@ class FileTransferClient:
             return
 
         with open(file_path, 'rb') as file:
-            file_data = file.read(BUFFER_SIZE)
-            seq_num = 0
-
-            while file_data:
-                print(f"Sending packet {seq_num}")
-                self.sender.send(file_data)
-                seq_num += 1
-                file_data = file.read(BUFFER_SIZE)
-
+            file_data = file.read()
+            self.sender.send(file_data)
             print(f"File {file_path} sent successfully!")
 
 if __name__ == "__main__":

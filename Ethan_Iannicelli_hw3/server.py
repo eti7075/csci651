@@ -19,16 +19,14 @@ class FileTransferServer:
             seq_num = 0
             while True:
                 packet = self.receiver.receive()
-                if packet is None:
-                    break 
 
                 _, _, _, data = parse_packet(packet)
+                
                 print(data)
                 file.write(data)
                 seq_num += 1
-                break
 
-            print(f"File saved to {SAVE_PATH}")
+                print(f"File saved to {SAVE_PATH}")
 
 if __name__ == "__main__":
     server = FileTransferServer()

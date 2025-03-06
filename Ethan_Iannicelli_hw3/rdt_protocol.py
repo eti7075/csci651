@@ -99,12 +99,13 @@ class ReliableDataTransferReceiver:
             if checksum(data) != chk_sum:
                 print("Packet corrupted! Ignoring.")
                 continue
-
+            
             if seq_num == self.expected_seq_num:  # In-order packet
                 print(f"Received in-order packet {seq_num}, sending ACK.")
                 ack_packet = create_packet(seq_num, 0, b'')
                 self.sock.sendto(ack_packet, addr)
                 self.expected_seq_num += 1  # Move expected sequence forward
+                return packet
             else:
                 print(f"Out-of-order packet {seq_num} received. Expecting {self.expected_seq_num}. Ignoring.")
 
