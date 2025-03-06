@@ -1,16 +1,17 @@
 import socket
 import os
 from rdt_protocol import ReliableDataTransferSender
+import rdt_protocol
 
 # Constants
-CLIENT_ADDRESS = ('localhost', 12347)  # Client Address
-INTER_ADDRESS = ('localhost', 12346)
-FILE_PATH = 'file_to_send.txt'  # Path of the file to send
-BUFFER_SIZE = 1024  # Size of each packet
+SENDER_ADDRESS = ('localhost', rdt_protocol.SENDER_PORT)
+INTER_ADDRESS = ('localhost', rdt_protocol.INTER_PORT)
+FILE_PATH = 'file_to_send_long.txt'  
+BUFFER_SIZE = 1024 
 
 class FileTransferClient:
     def __init__(self):
-        self.sender = ReliableDataTransferSender(INTER_ADDRESS, CLIENT_ADDRESS) 
+        self.sender = ReliableDataTransferSender(INTER_ADDRESS, SENDER_ADDRESS) 
     
     def send_file(self, file_path):
         """Send a file to the server using reliable data transfer."""
@@ -23,7 +24,6 @@ class FileTransferClient:
             seq_num = 0
 
             while file_data:
-                # Send file data using the reliable data transfer protocol
                 print(f"Sending packet {seq_num}")
                 self.sender.send(file_data)
                 seq_num += 1
