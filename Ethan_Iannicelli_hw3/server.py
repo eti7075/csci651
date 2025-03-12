@@ -1,34 +1,39 @@
 import socket
 import os
-from rdt_protocol import ReliableDataTransferReceiver, parse_packet
+from rdt_protocol import ReliableDataTransferEntity, parse_packet
 import rdt_protocol
 
 # Constants
-RECEIVER_ADDRESS = ('localhost', rdt_protocol.RECEIVER_PORT)
+RECEIVER_ADDRESS = ('127.0.0.1', rdt_protocol.RECEIVER_PORT)
+INTER_ADDRESS = ('127.0.0.1', rdt_protocol.INTER_PORT)
 BUFFER_SIZE = 1024  
-SAVE_PATH = 'received_file.txt'  
+SAVE_FOLDER = 'received_files/'  
 
 class FileTransferServer:
     def __init__(self):
-        self.receiver = ReliableDataTransferReceiver(RECEIVER_ADDRESS)
+        self.receiver = ReliableDataTransferEntity(INTER_ADDRESS, RECEIVER_ADDRESS, timeout=False)
     
     def receive_file(self):
-        """Receive a file from the client and save it."""
-        with open(SAVE_PATH, 'ab') as file:
-            print("Waiting for file...")
+        filename_packet = self.receiver.receive()
+        _, _, _, filename = parse_packet(filename_packet)
+
+        with open(SAVE_FOLDER + filename.decode(), 'ab') as file:
             seq_num = 0
             while True:
                 packet = self.receiver.receive()
 
                 _, _, _, data = parse_packet(packet)
                 
-                print(data)
                 file.write(data)
                 seq_num += 1
+                if not data:
+                    break
 
-                print(f"File saved to {SAVE_PATH}")
+            print(f"File saved to {SAVE_FOLDER + filename.decode()}")
+
 
 if __name__ == "__main__":
     server = FileTransferServer()
     while True:
+        print("Waiting for file (ctrl-C to quit)...")
         server.receive_file()

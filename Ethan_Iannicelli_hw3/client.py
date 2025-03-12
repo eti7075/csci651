@@ -1,29 +1,37 @@
 import socket
 import os
-from rdt_protocol import ReliableDataTransferSender
+from rdt_protocol import ReliableDataTransferEntity
 import rdt_protocol
 
 # Constants
-SENDER_ADDRESS = ('localhost', rdt_protocol.SENDER_PORT)
-INTER_ADDRESS = ('localhost', rdt_protocol.INTER_PORT)
-FILE_PATH = 'file_to_send_long.txt'  
+SENDER_ADDRESS = ('127.0.0.1', rdt_protocol.SENDER_PORT)
+INTER_ADDRESS = ('127.0.0.1', rdt_protocol.INTER_PORT)
 BUFFER_SIZE = 1024 
 
 class FileTransferClient:
     def __init__(self):
-        self.sender = ReliableDataTransferSender(INTER_ADDRESS, SENDER_ADDRESS) 
+        self.sender = ReliableDataTransferEntity(INTER_ADDRESS, SENDER_ADDRESS) 
     
     def send_file(self, file_path):
-        """Send a file to the server using reliable data transfer."""
         if not os.path.exists(file_path):
             print(f"File {file_path} does not exist!")
             return
+        
+        self.sender.send(file_path.encode())
 
         with open(file_path, 'rb') as file:
-            file_data = file.read()
-            self.sender.send(file_data)
-            print(f"File {file_path} sent successfully!")
+            while file_data := file.read(2048):
+                self.sender.send(file_data)
+
+        self.sender.send(b'')
+
+        print(f"File {file_path} sent successfully!")
 
 if __name__ == "__main__":
     client = FileTransferClient()
-    client.send_file(FILE_PATH)
+    while True:
+        print("Enter the filename to send (enter 'quit' to stop the program): ")
+        filename = input()
+        if filename == 'quit':
+            break
+        client.send_file(filename)
