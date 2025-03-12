@@ -19,24 +19,10 @@ BIT_RATE_TIME = 1
 HEADER_FORMAT = '!I I I'  # sequence number, acknowledgment, checksum
 HEADER_SIZE = struct.calcsize(HEADER_FORMAT)
 
-def udp_checksum(src_ip, dst_ip, src_port, dst_port, data):
-    pseudo_header = struct.pack(
-        '!4s4sBBH', 
-        socket.inet_aton(src_ip),  # Source IP
-        socket.inet_aton(dst_ip),  # Destination IP
-        0,                         # Reserved
-        socket.IPPROTO_UDP,        # Protocol
-        len(data) + 8              # UDP length (header + data)
-    )
-
-    udp_header = struct.pack(
-        '!HHHH',
-        src_port,                  # Source port
-        dst_port,                  # Destination port
-        len(data) + 8,            # Length (header + data)
-        0                         # Checksum (set to 0 initially)
-    )
-
+def udp_checksum(data):
+    """
+    perform a psuedo udp checksum by reducing the data to 4 bytes and taking one's complement
+    """
     packet = data
     
     if len(packet) % 2 != 0:
@@ -52,8 +38,8 @@ def udp_checksum(src_ip, dst_ip, src_port, dst_port, data):
     
     return checksum
 
-def create_packet(seq_num, ack_num, data, src_ip, dst_ip, src_port, dst_port):
-    header = struct.pack(HEADER_FORMAT, seq_num, ack_num, udp_checksum(src_ip, dst_ip, src_port, dst_port, data))
+def create_packet(seq_num, ack_num, data):
+    header = struct.pack(HEADER_FORMAT, seq_num, ack_num, udp_checksum(data))
     return header + data
 
 def parse_packet(packet):
@@ -97,8 +83,7 @@ class ReliableDataTransferEntity:
         while self.base < len(data_list) + prior_base:
             # send packets up to the window size or packet list size
             while self.next_seq_num < self.base + self.window_size and self.next_seq_num < len(data_list) + prior_base:
-                packet = create_packet(self.next_seq_num, 0, data_list[self.next_seq_num-prior_base], 
-                                       self.entity_address[0], self.inter_address[0], self.entity_address[1], self.inter_address[1])
+                packet = create_packet(self.next_seq_num, 0, data_list[self.next_seq_num-prior_base])
                 self.sock.sendto(packet, self.inter_address)
                 self.unacked_packets[self.next_seq_num] = time.time()   # all packets are unacked to start
                 print(f"Sent packet {self.next_seq_num}")
@@ -109,7 +94,7 @@ class ReliableDataTransferEntity:
                 ack_packet, addr = self.sock.recvfrom(BUFFER_SIZE)
 
                 ack_seq_num, _, chk_sum, data = parse_packet(ack_packet)
-                if udp_checksum(addr[0], self.entity_address[0], addr[1], self.entity_address[1], data) != chk_sum:
+                if udp_checksum(data) != chk_sum:
                     print("Ack Packet corrupted! Ignoring.")
                     continue
 
@@ -121,8 +106,7 @@ class ReliableDataTransferEntity:
                 # Retransmit all unacknowledged packets
                 print("Timeout! Retransmitting unacknowledged packets.")
                 for seq_num in range(self.base, self.next_seq_num):
-                    packet = create_packet(seq_num, 0, data_list[seq_num-prior_base],
-                                           self.entity_address[0], self.inter_address[0], self.entity_address[1], self.inter_address[1])
+                    packet = create_packet(seq_num, 0, data_list[seq_num-prior_base])
                     self.sock.sendto(packet, self.inter_address)
                     self.unacked_packets[seq_num] = time.time()
                     print(f"Retransmitted packet {seq_num}")
@@ -132,21 +116,19 @@ class ReliableDataTransferEntity:
             packet, addr = self.sock.recvfrom(BUFFER_SIZE)
             seq_num, _, chk_sum, data = parse_packet(packet)
 
-            if udp_checksum(addr[0], self.entity_address[0], addr[1], self.entity_address[1], data) != chk_sum:
+            if udp_checksum(data) != chk_sum:
                 print("Packet corrupted! Ignoring.")
                 continue
             
             if seq_num == self.expected_seq_num:    # in-order packet
                 print(f"Received in-order packet {seq_num}, sending ACK.")
-                ack_packet = create_packet(seq_num, 0, b'', 
-                                           self.entity_address[0], addr[0], self.entity_address[1], addr[1])
+                ack_packet = create_packet(seq_num, 0, b'')
                 self.sock.sendto(ack_packet, addr)
                 self.expected_seq_num += 1          # move expected sequence forward
                 return packet
             elif seq_num < self.expected_seq_num:   # previously acked packet
                 print(f"Received previously acked packet {seq_num}, re-sending ACK.")
-                ack_packet = create_packet(seq_num, 0, b'', 
-                    self.entity_address[0], addr[0], self.entity_address[1], addr[1])
+                ack_packet = create_packet(seq_num, 0, b'')
                 self.sock.sendto(ack_packet, addr)
             else:
                 print(f"Out-of-order packet {seq_num} received. Expecting {self.expected_seq_num}. Ignoring.")
