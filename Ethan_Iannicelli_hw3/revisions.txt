@@ -1,0 +1,47 @@
+commit 06f33557dc8300cd78b233916b91dfa3270aa6b4
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Fri Mar 14 11:48:33 2025 -0400
+
+    added report for hw3
+
+commit 205d8b34bdf4434379a90fcb74955e4d5f56ffee
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Fri Mar 14 11:36:27 2025 -0400
+
+    updated readme
+
+commit 363e8b6c682443f1cf902d180dda73c0dd9d0d70
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Fri Mar 14 11:15:18 2025 -0400
+
+    sphinx auto docs for project
+
+commit 2d7eee41970e6dacb089782f697d33a39525c0eb
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Wed Mar 12 13:32:10 2025 -0400
+
+    removed src and dst from checksum
+
+commit 31eb5c0330afbf74ad675534b47d5653d0a9e5f4
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Wed Mar 12 13:29:02 2025 -0400
+
+    updated checksum, fixed ack and curruption issues
+
+commit 964bee7a0f52261ce174eae5411b7f7f8d7b80e3
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Thu Mar 6 17:05:50 2025 -0500
+
+    added obstruction, return packet to file writer
+
+commit e36c6602f3529d837e5585270c416a73b05a3594
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Thu Mar 6 10:52:58 2025 -0500
+
+    sliding window
+
+commit 96c3ac623ff5c0bfe3062b43d5aa7fa56c9fa6ab
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Mar 5 12:17:33 2025 -0500
+
+    created rdt handshake and file transfer
