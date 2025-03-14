@@ -1,5 +1,3 @@
-import socket
-import os
 from rdt_protocol import ReliableDataTransferEntity, parse_packet
 import rdt_protocol
 
@@ -14,9 +12,18 @@ class FileTransferServer:
         self.receiver = ReliableDataTransferEntity(INTER_ADDRESS, RECEIVER_ADDRESS, timeout=False)
     
     def receive_file(self):
+        """
+        receiver function for a file transfer destination/server saves data to a file destination (constant)
+
+        :param self: the server object
+        :type self: FileTransferServer
+        """
         filename_packet = self.receiver.receive()
         _, _, _, filename = parse_packet(filename_packet)
 
+        with open(SAVE_FOLDER + filename.decode(), 'wb') as file:
+            pass
+        
         with open(SAVE_FOLDER + filename.decode(), 'ab') as file:
             seq_num = 0
             while True:

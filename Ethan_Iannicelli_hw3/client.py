@@ -1,4 +1,3 @@
-import socket
 import os
 from rdt_protocol import ReliableDataTransferEntity
 import rdt_protocol
@@ -13,6 +12,14 @@ class FileTransferClient:
         self.sender = ReliableDataTransferEntity(INTER_ADDRESS, SENDER_ADDRESS) 
     
     def send_file(self, file_path):
+        """
+        sends all the data from a given filepath to the server
+
+        :param self: client in the file transfer procedure
+        :type self: FileTransferClient
+        :param file_path: relative filename to this program being run
+        :type file_path: String
+        """
         if not os.path.exists(file_path):
             print(f"File {file_path} does not exist!")
             return

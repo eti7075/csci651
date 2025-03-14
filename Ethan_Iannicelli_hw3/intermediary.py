@@ -14,12 +14,24 @@ DELAY_PROBABILITY = 0.05
 DELAY_TIME = 3
 
 def simulate_loss(packet):
+    """
+    simulate packet loss
+
+    :return: the packet if no loss, None if else
+    :rtype: bitstring?
+    """
     if random.random() < LOSS_PROBABILITY:
         print("Simulating packet loss.")
         return None
     return packet
 
 def simulate_corruption(packet):
+    """
+    simulate packet curruption
+
+    :return: the packet
+    :rtype: bitstring
+    """
     if random.random() < CORRUPTION_PROBABILITY and packet is not None:
         print("Simulating packet corruption.")
         corrupted_data = bytearray(packet)
@@ -28,17 +40,38 @@ def simulate_corruption(packet):
     return packet
 
 def simulate_reordering(packet_queue):
+    """
+    simulate packet queue reordering
+
+    :return: packet queue
+    :rtype: array
+    """
     if random.random() < REORDER_PROBABILITY and len(packet_queue) > 1:
         print("Simulating packet reordering.")
         packet_queue[0], packet_queue[1] = packet_queue[1], packet_queue[0]
     return packet_queue
 
 def simulate_delay():
+    """
+    simulate packet delay via sleep
+    """
     if random.random() < DELAY_PROBABILITY:
         print("Simulating artificial delay.")
         time.sleep(DELAY_TIME)
 
 def handle_packet(packet, packet_queue, inter_socket, forward_address):
+    """
+    handles a packet by undergoing network conditions and forwarding to address
+
+    :param packet: the packet to be handled
+    :type packet: bitstring
+    :param packet_queue: queue of packets to be delivered
+    :type packet_queue: array
+    :param inter_socket: the socket of this script
+    :type inter_socker: socket
+    :param forward_address: the address to forward the packet to
+    :type forward_address: 2 tuple of ip and port
+    """
     packet = simulate_loss(packet)
     packet = simulate_corruption(packet)
     simulate_delay()
@@ -51,7 +84,11 @@ def handle_packet(packet, packet_queue, inter_socket, forward_address):
 
     print("-", end="")  # small output to show a packet was handled
 
-def run_intermediary():    
+def run_intermediary():  
+    """
+    runs the intermediary that acts as a network for this project. simulates network conditions
+    and handles forwarding of packets
+    """  
     inter_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     inter_socket.bind(INTER_PORT)
 

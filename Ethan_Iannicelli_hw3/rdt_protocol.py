@@ -22,6 +22,11 @@ HEADER_SIZE = struct.calcsize(HEADER_FORMAT)
 def udp_checksum(data):
     """
     perform a psuedo udp checksum by reducing the data to 4 bytes and taking one's complement
+
+    :param data: the data that the checksum is created from
+    :type data: bitstring
+    :return: generated checksum
+    :rtype: int
     """
     packet = data
     
@@ -39,19 +44,53 @@ def udp_checksum(data):
     return checksum
 
 def create_packet(seq_num, ack_num, data):
+    """
+    create a packet using a sequence number, ack number, and data
+
+    :param seq_num: the sequence number of the packet
+    :type seq_num: int
+    :param ack_num: the ack number of the packet
+    :type ack_num: int
+    :param data: the data to be included in the packet
+    :type data: bitstring
+    :return: bitstring representing formed packet
+    :rtype: bitstring
+    """
     header = struct.pack(HEADER_FORMAT, seq_num, ack_num, udp_checksum(data))
     return header + data
 
 def parse_packet(packet):
+    """
+    extracts seq, ack, checksum, and data from a packet
+
+    :param packet: formatted packet
+    :type packet: bitstring
+    :return: 4 tuple of seq, ack, check, data
+    :rtype: tuple
+    """
     header = packet[:HEADER_SIZE]
     data = packet[HEADER_SIZE:]
     seq_num, ack_num, chk_sum = struct.unpack(HEADER_FORMAT, header)
     return seq_num, ack_num, chk_sum, data
 
 def split_data(data, chunk_size):
+    """
+    splits a bitstring of data into multiple parts of a given size
+
+    :param data: bitstring of the full data
+    :type data: bitstring
+    :param chunk_size: maximum chunk size
+    :type chunk_size: int
+    :return: array of data split up into chunk_sizes
+    :rtype: array
+    """
     return [data[i:i + chunk_size] for i in range(0, len(data), chunk_size)]
 
 class ReliableDataTransferEntity:
+    """
+    class for a RDT entity, either a client or server. different types of entity are differentiated by
+    their actions and behaviors
+    """
     def __init__(self, inter_address, entity_address, window_size=4, timeout=True):
         self.inter_address = inter_address
         self.window_size = window_size
@@ -68,6 +107,14 @@ class ReliableDataTransferEntity:
         self.expected_seq_num = 0  # Expected in-order sequence number
 
     def send(self, data):
+        """
+        sends data based on the entity of the sender
+
+        :param self: the sender object
+        :type self: ReliableDataTransferEntity
+        :param data: data to be sent
+        :type data: bitstring
+        """
         # data_list is the list of data packets that are to be sent for a current request
         # this is a local variable for this entity, and is not preserved between send instances, so
         # need to be careful when indexing
@@ -93,9 +140,10 @@ class ReliableDataTransferEntity:
             try:
                 ack_packet, addr = self.sock.recvfrom(BUFFER_SIZE)
 
-                ack_seq_num, _, chk_sum, data = parse_packet(ack_packet)
-                if udp_checksum(data) != chk_sum:
-                    print("Ack Packet corrupted! Ignoring.")
+                ack_seq_num, _, _, data = parse_packet(ack_packet)
+
+                if ack_seq_num > self.next_seq_num:
+                    print(f"Received Ack is invalid: Ack {ack_seq_num}, Max_Seq {self.next_seq_num}. Ignoring")
                     continue
 
                 if ack_seq_num >= self.base:  # Move the window forward
@@ -112,6 +160,14 @@ class ReliableDataTransferEntity:
                     print(f"Retransmitted packet {seq_num}")
 
     def receive(self):
+        """
+        recieves data from a network
+
+        :param self: the receiver object
+        :type self: ReliableDataTransferEntity
+        :return: the data in the packet
+        :rtype: bitstring
+        """
         while True:
             packet, addr = self.sock.recvfrom(BUFFER_SIZE)
             seq_num, _, chk_sum, data = parse_packet(packet)
