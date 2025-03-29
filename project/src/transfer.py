@@ -10,14 +10,13 @@ logger = get_logger("Transfer")
 class FileTransfer:
     """Handles chunked file transfers between peers."""
 
-    def __init__(self, host, port):
-        self.host = host
+    def __init__(self, port):
         self.port = port
 
     def start_server(self):
         """Start the file transfer server."""
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-            server.bind((self.host, self.port))
+            server.bind(('0.0.0.0', self.port))
             server.listen(CONFIG["MAX_CONNECTIONS"])
             logger.info(f"File transfer server listening on {self.port}...")
 
@@ -43,11 +42,11 @@ class FileTransfer:
         finally:
             conn.close()
 
-    def request_file(self, filename, peer_ip, peer_port):
+    def request_file(self, filename, peer_port):
         """Request a file from a peer."""
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
             try:
-                client.connect((peer_ip, peer_port))
+                client.connect(('0.0.0.0', peer_port))
                 client.sendall(filename.encode())
 
                 file_path = os.path.join(CONFIG["DOWNLOAD_FOLDER"], filename)
@@ -60,4 +59,4 @@ class FileTransfer:
                 else:
                     logger.error("File integrity check failed!")
             except Exception as e:
-                logger.error(f"Error downloading {filename} from {peer_ip} {peer_port}: {e}")
+                logger.error(f"Error downloading {filename} from {peer_port}: {e}")
