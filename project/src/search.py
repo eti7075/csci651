@@ -1,12 +1,13 @@
 import os
 from utils.logger import get_logger
+from utils.config import CONFIG
 
 logger = get_logger("Search")
 
 class FileIndex:
     """Manages local file index and search functionality."""
 
-    def __init__(self, shared_folder="shared"):
+    def __init__(self, shared_folder=CONFIG["SHARED_FOLDER"]):
         self.shared_folder = shared_folder
         os.makedirs(shared_folder, exist_ok=True)
         self.files = set(os.listdir(shared_folder))

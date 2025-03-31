@@ -2,7 +2,7 @@ import socket
 import threading
 import os
 from utils.config import CONFIG
-from integrity import verify_checksum, generate_checksum
+from packet import create_packet, parse_packet, udp_checksum
 from utils.logger import get_logger
 
 logger = get_logger("Transfer")
@@ -10,53 +10,60 @@ logger = get_logger("Transfer")
 class FileTransfer:
     """Handles chunked file transfers between peers."""
 
-    def __init__(self, port):
-        self.port = port
+    def __init__(self, receiver_port, sender_port):
+        self.receiver_port = receiver_port
+        self.sender_port = sender_port
+        self.host = "0.0.0.0"
+        self.receiver_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.receiver_sock.bind((self.host, self.receiver_port))
+        self.sender_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.sender_sock.bind((self.host, self.sender_port))
 
     def start_server(self):
         """Start the file transfer server."""
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-            server.bind(('0.0.0.0', self.port))
-            server.listen(CONFIG["MAX_CONNECTIONS"])
-            logger.info(f"File transfer server listening on {self.port}...")
+        logger.info(f"File transfer server listening on {self.sender_port}...")
 
-            while True:
-                conn, addr = server.accept()
-                threading.Thread(target=self.handle_client, args=(conn, addr), daemon=True).start()
+        threading.Thread(target=self.handle_client, args=(), daemon=True).start()
 
-    def handle_client(self, conn, addr):
+    def handle_client(self):
         """Handle an incoming file request."""
-        try:
-            filename = conn.recv(1024).decode()
-            file_path = os.path.join("shared", filename)
+        while True:
+            packet, addr = self.sender_sock.recvfrom(1024)
+            check_sum, data = parse_packet(packet)
+            if udp_checksum(data) == check_sum:
+                filename = data.decode()
+                file_path = os.path.join(f"{os.getcwd()}/{CONFIG["SHARED_FOLDER"]}", filename)
 
-            if os.path.exists(file_path):
-                with open(file_path, "rb") as file:
-                    while chunk := file.read(CONFIG["CHUNK_SIZE"]):
-                        conn.sendall(chunk)
-                logger.info(f"Sent {filename} to {addr}")
+                if os.path.exists(file_path):
+                    with open(file_path, "rb") as file:
+                        chunk_num = 1
+                        while chunk := file.read(CONFIG["CHUNK_SIZE"]):
+                            logger.info(f"Sending file {filename} chunk {chunk_num}")
+                            chunk_num += 1
+                            packet = create_packet(chunk)
+                            self.sender_sock.sendto(packet, addr)
+                    logger.info(f"Sent {filename} to {addr}")
+                else:
+                    logger.error(f"File specified was not found: {file_path}")
             else:
-                conn.sendall(b"ERROR: File not found.")
-        except Exception as e:
-            logger.error(f"Error handling client {addr}: {e}")
-        finally:
-            conn.close()
+                logger.error(f"Filename packet was corrupted: {check_sum} != {udp_checksum(data)} || {data}")
 
     def request_file(self, filename, peer_port):
         """Request a file from a peer."""
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
-            try:
-                client.connect(('0.0.0.0', peer_port))
-                client.sendall(filename.encode())
+        packet = create_packet(filename.encode())
+        self.receiver_sock.sendto(packet, (self.host, peer_port))
 
-                file_path = os.path.join(CONFIG["DOWNLOAD_FOLDER"], filename)
-                with open(file_path, "wb") as file:
-                    while chunk := client.recv(CONFIG["CHUNK_SIZE"]):
-                        file.write(chunk)
-
-                if verify_checksum(file_path):
-                    logger.info(f"File {filename} downloaded successfully!")
+        file_path = os.path.join(f"{os.getcwd()}/{CONFIG["DOWNLOAD_FOLDER"]}", filename)
+        with open(file_path, "wb") as file:
+            chunk_num = 1
+            while True:
+                packet, _ = self.receiver_sock.recvfrom(CONFIG["CHUNK_SIZE"]+4)
+                check_sum, data = parse_packet(packet)
+                if check_sum == udp_checksum(data):
+                    logger.info(f"Received file {filename} chunk {chunk_num}")
+                    chunk_num += 1
+                    file.write(data)
                 else:
-                    logger.error("File integrity check failed!")
-            except Exception as e:
-                logger.error(f"Error downloading {filename} from {peer_port}: {e}")
+                    logger.error(f"Data integrity check failed: {check_sum} != {udp_checksum(data)} || ")
+            
+            logger.info("File finished downloading")

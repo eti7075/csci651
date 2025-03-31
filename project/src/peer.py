@@ -9,7 +9,7 @@ from utils.logger import get_logger
 logger = get_logger("Peer")
 
 class Peer:
-    def __init__(self, discovery_port=5000, transfer_port=5002):
+    def __init__(self, discovery_port, sender_port, receiver_port):
         """
         :param host: The local IP to bind to.
         :param discovery_listen_port: The port this peer listens on.
@@ -17,11 +17,12 @@ class Peer:
         :param transfer_port: The port used for file transfer.
         """
         self.discovery_port = discovery_port
-        self.transfer_port = transfer_port
+        self.sender_port = sender_port
+        self.receiver_port = receiver_port
 
-        self.discovery = PeerDiscovery(id=self.transfer_port, port=self.discovery_port)
+        self.discovery = PeerDiscovery(id=self.sender_port, port=self.discovery_port)
         self.index = FileIndex()
-        self.transfer = FileTransfer(self.transfer_port)
+        self.transfer = FileTransfer(self.receiver_port, self.sender_port)
         self.running = True
 
     def start(self):
@@ -39,7 +40,7 @@ class Peer:
                 self.index.search_files(query)
             elif command.startswith("download"):
                 _, filename, peer_port = command.split(" ", 3)
-                self.transfer.request_file(filename,int(peer_port))
+                self.transfer.request_file(filename, int(peer_port))
             elif command == "exit":
                 self.running = False
                 logger.info("Shutting down peer...")
