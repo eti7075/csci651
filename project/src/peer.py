@@ -22,7 +22,7 @@ class Peer:
 
         self.discovery = PeerDiscovery(id=self.sender_port, port=self.discovery_port)
         self.index = FileIndex()
-        self.transfer = FileTransfer(self.receiver_port, self.sender_port)
+        self.transfer = FileTransfer(self.receiver_port, self.sender_port, self.discovery)
         self.running = True
 
     def start(self):
