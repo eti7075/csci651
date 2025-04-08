@@ -2,7 +2,7 @@ import threading
 import os
 from discovery import PeerDiscovery
 from transfer import FileTransfer
-from utils.logger import get_logger
+from utils.logger import get_logger, format_file_chunks
 from utils.config import CONFIG
 
 logger = get_logger("Peer")
@@ -30,14 +30,15 @@ class Peer:
                     while True:
                         chunk = f.read(CONFIG["CHUNK_SIZE"])
                         if not chunk:
-                            chunks[filename][chunk_num] = b''
+                            chunks[filename][chunk_num] = ''
                             break
-                        chunks[filename][chunk_num] = chunk
+                        chunks[filename][chunk_num] = chunk.decode()
                         chunk_num += 1
 
         self.files = chunks
         self.transfer = FileTransfer(transfer_port, self.discovery, self.files)
-
+        self.receiving = False
+        self.writing = False
     
     def start(self):
         """Start peer services."""
@@ -48,12 +49,18 @@ class Peer:
         while self.running:
             command = input("\nEnter command (list, download, exit): ").strip().lower()
             if command == "list":
-                logger.info(self.files)
+                logger.info(format_file_chunks(self.files))
             elif command.startswith("download"):
                 c, filename = command.split(" ")
-                for s in [s for s, d in self.discovery.peers if s != self.sender_port]:
-                    threading.Thread(target=self.transfer.request_file, args=(filename, s), daemon=True).start()
+                chunks = {}
+                self.receiving = True
+                if len(self.discovery.peers) == 1:
+                    logger.error("No peers available to download from...")
+                else:
+                    for s in [s for s, d in self.discovery.peers if s != self.sender_port]:
+                        threading.Thread(target=self.transfer.request_file, args=(filename, s, chunks, self), daemon=True).start()
             elif command == "exit":
+                self.discovery.stop()
                 self.running = False
                 logger.info("Shutting down peer...")
             else:

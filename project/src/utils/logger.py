@@ -22,3 +22,9 @@ def get_logger(name="P2P"):
 # Example usage
 logger = get_logger()
 logger.info("Logger initialized.")
+
+def format_file_chunks(files):
+    output = "\n"
+    for file, chunk in files.items():
+        output += f"{file} chunks available: {[key for key, value in chunk.items()]}\n"
+    return output

@@ -49,7 +49,10 @@ class FileTransfer:
             check_sum, chunk_num, data = parse_packet(packet)
             if udp_checksum(data) == check_sum:
                 filename, chunk = data.decode().split(" ", 1)
-                self.files[filename][chunk_num] = chunk.encode()
+                if filename in self.files.keys():
+                    self.files[filename][chunk_num] = chunk
+                else:
+                    self.files[filename] = {chunk_num: chunk}
             else:
                 logger.error(f"Filename packet was corrupted: {check_sum} != {udp_checksum(data)} || {data}")
 
@@ -71,18 +74,17 @@ class FileTransfer:
                 file = self.files[filename]
                 for chunk_num, chunk in file.items():
                     logger.info(f"Sending file {filename} chunk {chunk_num}")
-                    packet = create_packet(chunk, chunk_num)
+                    packet = create_packet(chunk.encode(), chunk_num)
                     self.sender_sock.sendto(packet, addr)
                 logger.info(f"Sent {filename} to {addr}")
             else:
                 logger.error(f"Filename packet was corrupted: {check_sum} != {udp_checksum(data)} || {data}")
 
-    def request_file(self, filename, peer_port):
+    def request_file(self, filename, peer_port, chunks, peer):
         """Request a file from a peer."""
         if peer_port in [s for s, d in self.discovery.peers]:
             packet = create_packet(filename.encode(), 0)
             self.receiver_sock.sendto(packet, (self.host, int(peer_port)))
-            chunks = {}
             start_time = time.time()
             timeout = True
             while time.time() - start_time < 20: # timeout to imply incomplete file
@@ -90,20 +92,25 @@ class FileTransfer:
                 check_sum, chunk_num, data = parse_packet(packet)
                 if check_sum == udp_checksum(data):
                     logger.info(f"Received file {filename} chunk {chunk_num}")
-                    chunks[chunk_num] = data
+                    chunks[chunk_num] = data.decode()
                 else:
                     logger.error(f"Data integrity check failed: {check_sum} != {udp_checksum(data)} || ")   
                 n = max(chunks.keys()) if chunks else -1 
-                if all(k in chunks for k in range(n + 1)) and chunks.get(n) == b'':
+                if all(k in chunks for k in range(n + 1)) and chunks.get(n) == '':
+                    timeout = False
+                    peer.receiving = False
+                    break
+                if peer.receiving == False:
                     timeout = False
                     break
             if timeout:
-                logger.info(f"Timeout while requesting file. incomplete file receiving, will not save")
-            else:
-                file_path = os.path.join(f"{os.getcwd()}/{CONFIG["DOWNLOAD_FOLDER"]}", filename)
-                with open(file_path, "wb") as file:
-                    file.write(b''.join(chunks[k] for k in sorted(chunks)))
+                logger.info(f"Timeout while requesting file...")
+            if peer.writing is False:
+                peer.writing = True
+                with open(os.path.join(f"{os.getcwd()}/{CONFIG["DOWNLOAD_FOLDER"]}", filename), "wb") as file:
+                    file.write(b''.join(chunks[k].encode() for k in sorted(chunks)))
                     logger.info("File finished downloading")
+                peer.writing = False
         else:
             logger.error(f"Peer {peer_port} is not online.")
             logger.info(f"Available peers: {self.discovery.peers}")

@@ -42,11 +42,14 @@ class PeerDiscovery:
             while self.running:
                 try:
                     data, _ = sock.recvfrom(1024)
-                    s, d = data.decode().split(" ", 1)
+                    s, d, m = data.decode().split(" ", 2)
                     t = (s, d)
-                    if t not in self.peers:
+                    if t not in self.peers and m == "start":
                         self.peers.add(t)
-                        logger.info(f"Discovered peer: {t} from broadcast")
+                        logger.info(f"Discovered peer: {t} from broadcast - adding to known peers")
+                    if t in self.peers and m == "stop":
+                        del [p for p in self.peers if p == t][0]
+                        logger.info(f"Removing peer: {t} from known peers")
 
                 except socket.error as e:
                     logger.error(f"Error receiving broadcast: {e}")
@@ -55,7 +58,7 @@ class PeerDiscovery:
         """Broadcast availability to the network."""
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            message = f"{self.sender_port} {self.distributee_port}".encode("utf-8")
+            message = f"{self.sender_port} {self.distributee_port} start".encode("utf-8")
             try:
                 sock.sendto(message, ("255.255.255.255", self.port))
             except OSError as e:
@@ -63,4 +66,11 @@ class PeerDiscovery:
 
     def stop(self):
         """Stop peer discovery."""
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+            message = f"{self.sender_port} {self.distributee_port} stop".encode("utf-8")
+            try:
+                sock.sendto(message, ("255.255.255.255", self.port))
+            except OSError as e:
+                logger.error(f"Broadcast error: {e}")
         self.running = False
