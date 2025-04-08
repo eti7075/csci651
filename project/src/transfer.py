@@ -40,9 +40,7 @@ class FileTransfer:
                         port = peers[random.randint(0, len(peers) - 1)]
                         packet = create_packet(f"{file} {chunk}".encode(), chunk_num)
                         self.distributor_sock.sendto(packet, (self.host, int(port)))
-                        time.sleep(1)
-                    time.sleep(5)
-            time.sleep(10)
+            time.sleep(10) # simulate limiting the data available to each peer
 
     def receive_distributed_files(self):
         logger.info(f"Starting receiver for distributed files...")
@@ -54,7 +52,6 @@ class FileTransfer:
                 self.files[filename][chunk_num] = chunk.encode()
             else:
                 logger.error(f"Filename packet was corrupted: {check_sum} != {udp_checksum(data)} || {data}")
-
 
     def start_server(self):
         """Start the file transfer server."""
@@ -86,7 +83,9 @@ class FileTransfer:
             packet = create_packet(filename.encode(), 0)
             self.receiver_sock.sendto(packet, (self.host, int(peer_port)))
             chunks = {}
-            while True:
+            start_time = time.time()
+            timeout = True
+            while time.time() - start_time < 20: # timeout to imply incomplete file
                 packet, _ = self.receiver_sock.recvfrom(1024)
                 check_sum, chunk_num, data = parse_packet(packet)
                 if check_sum == udp_checksum(data):
@@ -96,12 +95,15 @@ class FileTransfer:
                     logger.error(f"Data integrity check failed: {check_sum} != {udp_checksum(data)} || ")   
                 n = max(chunks.keys()) if chunks else -1 
                 if all(k in chunks for k in range(n + 1)) and chunks.get(n) == b'':
+                    timeout = False
                     break
-
-            file_path = os.path.join(f"{os.getcwd()}/{CONFIG["DOWNLOAD_FOLDER"]}", filename)
-            with open(file_path, "wb") as file:
-                file.write(b''.join(chunks[k] for k in sorted(chunks)))
-                logger.info("File finished downloading")
+            if timeout:
+                logger.info(f"Timeout while requesting file. incomplete file receiving, will not save")
+            else:
+                file_path = os.path.join(f"{os.getcwd()}/{CONFIG["DOWNLOAD_FOLDER"]}", filename)
+                with open(file_path, "wb") as file:
+                    file.write(b''.join(chunks[k] for k in sorted(chunks)))
+                    logger.info("File finished downloading")
         else:
             logger.error(f"Peer {peer_port} is not online.")
             logger.info(f"Available peers: {self.discovery.peers}")

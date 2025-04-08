@@ -36,7 +36,6 @@ class Peer:
                         chunk_num += 1
 
         self.files = chunks
-        print(self.files)
         self.transfer = FileTransfer(transfer_port, self.discovery, self.files)
 
     
@@ -51,7 +50,7 @@ class Peer:
             if command == "list":
                 logger.info(self.files)
             elif command.startswith("download"):
-                _, filename = command.split(" ")
+                c, filename = command.split(" ")
                 for s in [s for s, d in self.discovery.peers if s != self.sender_port]:
                     threading.Thread(target=self.transfer.request_file, args=(filename, s), daemon=True).start()
             elif command == "exit":
