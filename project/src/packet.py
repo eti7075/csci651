@@ -1,7 +1,7 @@
 import struct
 
 # big endian, 4 bytes each
-HEADER_FORMAT = '!I'  # checksum
+HEADER_FORMAT = '!I I'  # checksum, chunk_num
 HEADER_SIZE = struct.calcsize(HEADER_FORMAT)
 
 def udp_checksum(data):
@@ -28,7 +28,7 @@ def udp_checksum(data):
     
     return checksum
 
-def create_packet(data):
+def create_packet(data, chunk_num):
     """
     create a packet using packet data
 
@@ -38,7 +38,7 @@ def create_packet(data):
     :rtype: bitstring
     """
     check_sum = udp_checksum(data)
-    header = struct.pack(HEADER_FORMAT, check_sum)
+    header = struct.pack(HEADER_FORMAT, check_sum, chunk_num)
     return header + data
 
 def parse_packet(packet):
@@ -52,5 +52,5 @@ def parse_packet(packet):
     """
     header = packet[:HEADER_SIZE]
     data = packet[HEADER_SIZE:]
-    chk_sum = struct.unpack(HEADER_FORMAT, header)
-    return chk_sum[0], data
+    chk_sum, chunk_num = struct.unpack(HEADER_FORMAT, header)
+    return chk_sum, chunk_num, data

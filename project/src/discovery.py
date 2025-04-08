@@ -8,14 +8,15 @@ logger = get_logger()
 class PeerDiscovery:
     """Handles peer discovery over UDP broadcast."""
 
-    def __init__(self, id, port):
+    def __init__(self, transfer_port, port):
         """
         :param listen_port: The unique port each peer listens on.
         :param broadcast_port: The shared broadcast port all peers send announcements to.
         """
-        self.id = id
+        self.sender_port = transfer_port + 1
+        self.distributee_port = transfer_port + 3
         self.port = port
-        self.peers = set([f"{self.id}".encode("utf-8")])
+        self.peers = {(f"{self.sender_port}", f"{self.distributee_port}")}
         self.running = True
         self.broadcast_interval = 5
         self.host = "0.0.0.0"
@@ -41,10 +42,11 @@ class PeerDiscovery:
             while self.running:
                 try:
                     data, _ = sock.recvfrom(1024)
-
-                    if data not in self.peers:
-                        self.peers.add(data)
-                        logger.info(f"Discovered peer: {data} from broadcast")
+                    s, d = data.decode().split(" ", 1)
+                    t = (s, d)
+                    if t not in self.peers:
+                        self.peers.add(t)
+                        logger.info(f"Discovered peer: {t} from broadcast")
 
                 except socket.error as e:
                     logger.error(f"Error receiving broadcast: {e}")
@@ -53,7 +55,7 @@ class PeerDiscovery:
         """Broadcast availability to the network."""
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-            message = f"{self.id}".encode("utf-8")
+            message = f"{self.sender_port} {self.distributee_port}".encode("utf-8")
             try:
                 sock.sendto(message, ("255.255.255.255", self.port))
             except OSError as e:
