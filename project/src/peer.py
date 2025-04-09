@@ -10,10 +10,13 @@ logger = get_logger("Peer")
 class Peer:
     def __init__(self, discovery_port, transfer_port):
         """
-        :param host: The local IP to bind to.
-        :param discovery_listen_port: The port this peer listens on.
-        :param discovery_broadcast_port: The port used to broadcast peer presence.
-        :param transfer_port: The port used for file transfer.
+        constructor for the Peer entity, defines global varaibles and reads all available
+        files/chunks to local memory
+
+        :param discovery_port: The port this peer broadcast/discovers on.
+        :type discovery_port: int
+        :param transfer_port: The base port used for file transfer.
+        :param transfer_port: int
         """
         self.discovery = PeerDiscovery(transfer_port, discovery_port)
         self.running = True
@@ -41,7 +44,15 @@ class Peer:
         self.writing = False
     
     def start(self):
-        """Start peer services."""
+        """
+        Start peer broadcasting and transfer services. Also start command line input loop
+        for handling commands.
+        - list: output the files and chunks available on this peer
+        - download <file>: requests all available peers for any chunks they have for <file>.
+        use threading for each request, and accumulate in a shared local memory to build the
+        file on the receiver end.
+        - exit: stop the peer and shut down
+        """
         threading.Thread(target=self.discovery.start, daemon=True).start()
         threading.Thread(target=self.transfer.start_server, daemon=True).start()
         logger.info("Peer started. Listening for connections...")

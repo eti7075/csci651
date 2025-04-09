@@ -1,6 +1,5 @@
-import os
-
-# Default configurations
+# Default configurations for the P2P system
+# contants shared across all entities and classes
 CONFIG = {
     "PEER_DISCOVERY_PORT": 5000,
     "FILE_TRANSFER_PORT": 5001,

@@ -6,12 +6,12 @@ from utils.logger import get_logger
 logger = get_logger()
 
 class PeerDiscovery:
-    """Handles peer discovery over UDP broadcast."""
-
     def __init__(self, transfer_port, port):
         """
-        :param listen_port: The unique port each peer listens on.
-        :param broadcast_port: The shared broadcast port all peers send announcements to.
+        constructor that creates and defines properties of the discovery class
+
+        :param transfer_port: base port used for transport for this peer. sender is +1, distributee is +3
+        :param broadcast_port: The shared broadcast port all peers send announcements to
         """
         self.sender_port = transfer_port + 1
         self.distributee_port = transfer_port + 3
@@ -22,7 +22,9 @@ class PeerDiscovery:
         self.host = "0.0.0.0"
 
     def start(self):
-        """Start peer discovery."""
+        """
+        listening for peers and broadcasting itself
+        """
         threading.Thread(target=self.listen_for_peers, daemon=True).start()
         logger.info(f"Broadcasting presence on port {self.port} every {self.broadcast_interval} seconds.")
         while self.running:
@@ -30,7 +32,11 @@ class PeerDiscovery:
             time.sleep(self.broadcast_interval)
 
     def listen_for_peers(self):
-        """Listen for incoming peer announcements."""
+        """
+        Listen for incoming peer announcements on the broadcast port. when it receives a
+        broadcast, extract the peer ports that are packaged in the broadcast. if the broadcast
+        is defined as 'start', add to known peers - if 'stop' remove from known peers
+        """
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
@@ -55,7 +61,10 @@ class PeerDiscovery:
                     logger.error(f"Error receiving broadcast: {e}")
 
     def broadcast_announcement(self):
-        """Broadcast availability to the network."""
+        """
+        Broadcast availability to the network on the broadcast port. send the sender port
+        the distributee port with this broadcast, as well as the 'start' itentifier
+        """
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             message = f"{self.sender_port} {self.distributee_port} start".encode("utf-8")
@@ -65,7 +74,9 @@ class PeerDiscovery:
                 logger.error(f"Broadcast error: {e}")
 
     def stop(self):
-        """Stop peer discovery."""
+        """
+        shut down this discovery entity. broadcast itself with 'stop' flag, and set running to false
+        """
         with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
             message = f"{self.sender_port} {self.distributee_port} stop".encode("utf-8")

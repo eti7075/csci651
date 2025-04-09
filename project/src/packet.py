@@ -30,10 +30,12 @@ def udp_checksum(data):
 
 def create_packet(data, chunk_num):
     """
-    create a packet using packet data
+    create a packet using packet data and a chunk number
 
     :param data: the data to be included in the packet
     :type data: bitstring
+    :param chunk_num: the chunk number associated with this data
+    :type chunk_num: int
     :return: bitstring representing formed packet
     :rtype: bitstring
     """
@@ -43,11 +45,11 @@ def create_packet(data, chunk_num):
 
 def parse_packet(packet):
     """
-    extracts checksum and data from a packet
+    extracts checksum, chunk_num, and data from a packet
 
     :param packet: formatted packet
     :type packet: bitstring
-    :return: 2 tuple of check, data
+    :return: 3 tuple of check, chunk_num, data
     :rtype: tuple
     """
     header = packet[:HEADER_SIZE]
