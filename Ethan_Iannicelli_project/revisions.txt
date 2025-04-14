@@ -1,0 +1,83 @@
+commit 1195a17b71c1e31e319f3e3244f78695b8f00510
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Mon Apr 14 11:31:02 2025 -0400
+
+    rename
+
+commit 85fa40f0f249896b6cdb1c594b4259afd41def1c
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Mon Apr 14 08:56:17 2025 -0400
+
+    report
+
+commit 6fbd46dc13873205c44cef658f71ced2c5f41b64
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Fri Apr 11 19:52:56 2025 -0400
+
+    peer file structure, pdf, readme
+
+commit 3830186a4cad1b98a7322f3a435e5335714b834c
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Wed Apr 9 11:21:46 2025 -0400
+
+    commenting project:
+
+commit 2d71d930db18849ee06e7ee080ed8eba0f76990b
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Tue Apr 8 17:41:27 2025 -0400
+
+    removed files created by project
+
+commit 634b14aab31058dfd59dabd6b5d356d8c578146f
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Tue Apr 8 17:34:09 2025 -0400
+
+    added method for removing peers that leave and logging 'my' chunks better
+
+commit 1f587a2e6519826ab9a1f8bca5fae14ddccb23ab
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Tue Apr 8 11:57:13 2025 -0400
+
+    remove extra files x2
+
+commit 07db9211204caab0318af86ecea4ee13b37ee82d
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Tue Apr 8 11:56:21 2025 -0400
+
+    remove extra files
+
+commit 03830ae91b79b3a2f0e9fb8afcb11c0bdeb19f1d
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Tue Apr 8 11:49:09 2025 -0400
+
+    added timeout for requesting files
+
+commit 9e86ea8eda465a93ad3d322a2fe175d07df6a2e3
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Tue Apr 8 11:21:29 2025 -0400
+
+    shared data between peers
+
+commit 1d37df466fc54f7e43678cd1b4e26065866344e2
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Sat Apr 5 12:28:44 2025 -0400
+
+    added EOF marker, handling for requests from offline peer:
+
+commit eb25b5b6089ad2e3c277ac068d6a623d88ac191c
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Sun Mar 30 22:28:27 2025 -0400
+
+    fix integrity and sending and receiving ports
+
+commit 584f1c146d60999aaacea6d66f92a55dac8683f1
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Sat Mar 29 16:11:58 2025 -0400
+
+    fixed broadcasting and listening
+
+commit d17ed278a4e5894652abdc977fb309527b5cae7a
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Sat Mar 29 14:30:06 2025 -0400
+
+    started project p2p
