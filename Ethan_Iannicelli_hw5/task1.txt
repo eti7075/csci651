@@ -1,0 +1,44 @@
+Requirements: 
+- The IP address space is 20.10.172.0—20.10.172.255.
+- LAN A has at least 50 hosts
+- LAN B has at least 75 hosts
+- LAN C has at least 20 hosts
+
+Specify:
+- Subnet Mask
+- Network Address
+- Smallest IP address
+- Highest IP address
+
+Going from largest requirement to smallest, we see B needs 75 hosts, A needs 50 and C needs 20.
+B requires 75 hosts, so it needs 7 bits for all its addresses: 2^6 < 75 < 2^7.
+Therefore, we know the subnet mask is the first 25 bits, since 32 - 7 = 25.
+We will give LAN B the addresses from 0-127 to fufill its needs.
+Next, A requires 50 hosts, which means it needs 6 bits for all its addresses: 2^5 < 50 < 2^6.
+Therefore, we know the subnet mask is the first 26 bits, since 32 - 6 = 26.
+We will give LAN A the addresses from 128 - 191.
+Finally for C, we see that it only needs 20 hosts, so 5 bits: 2^4 < 20 < 2^5.
+Therefore we know the subnet mask is the first 27 bits, since 32 - 5 = 27.
+We will give C the addresses from 192 to 223.
+
+Note: broadcast address is required for each subnet at the highest point before the next subnet. 
+
+This leaves us with the following details for each subnet:
+LAN A:
+Subnet Mask: 255.255.255.192/26
+Network Address: 20.10.172.128
+Smallest IP Available: 20.10.172.129
+Largest IP Available: 20.10.172.190
+
+LAN B:
+Subnet Mask: 255.255.255.128/25
+Network Address: 20.10.172.0
+Smallest IP Available: 20.10.172.1
+Largest IP Available: 20.10.172.126
+
+LAN C:
+Subnet Mask: 255.255.255.224/27
+Network Address: 20.10.172.192
+Smallest IP Available: 20.10.172.193
+Largest IP Available: 20.10.172.222
+
