@@ -7,17 +7,29 @@ from mininet.cli import CLI
 
 class LinuxRouter(Node):
     def config(self, **params):
+        """
+        Sets the configuration for the router. sets ipv4 forwarding to true.
+        """
         super(LinuxRouter, self).config(**params)
         self.cmd('sysctl net.ipv4.ip_forward=1')
 
     def terminate(self):
+        """
+        Run on router ternimation. sets ipv4 forwarding to false
+        """
         self.cmd('sysctl net.ipv4.ip_forward=0')
         super(LinuxRouter, self).terminate()
 
 class NetworkTopo(Topo):
     def build(self, **_opts):
+        """
+        Builds the network outlined for this homework. Three LANs represented by routers, each connected to 
+        2 hosts via switches, and all routers connected through the provided IP gateway
+        """
+        # Create LAN A (Router A)
         rA = self.addNode('rA', cls=LinuxRouter, ip='20.10.172.129/26')
 
+        # Create switch A that connects hosts to router
         s1 = self.addSwitch('s1')
         self.addLink(s1, rA, intfName2='rA-eth1', params2={'ip': '20.10.172.129/26'})
 
@@ -27,8 +39,10 @@ class NetworkTopo(Topo):
         self.addLink(hA1, s1)
         self.addLink(hA2, s1)
 
+        # Create LAN B (Router B)
         rB = self.addNode('rB', cls=LinuxRouter, ip='20.10.172.1/25')
 
+        # Create switch B that connects hosts to router
         s2 = self.addSwitch('s2')
         self.addLink(s2, rB, intfName2='rB-eth1', params2={'ip': '20.10.172.1/25'})
 
@@ -38,8 +52,10 @@ class NetworkTopo(Topo):
         self.addLink(hB1, s2)
         self.addLink(hB2, s2)
 
+        # Create LAN C (Router C)
         rC = self.addNode('rC', cls=LinuxRouter, ip='20.10.172.193/27')
 
+        # Create switch C that connects hosts to router
         s3 = self.addSwitch('s3')
         self.addLink(s3, rC, intfName2='rC-eth1', params2={'ip': '20.10.172.193/27'})
 
@@ -49,13 +65,16 @@ class NetworkTopo(Topo):
         self.addLink(hC1, s3)
         self.addLink(hC2, s3)
 
-        # Task 3
+        # Task 3 - connect all three LANs (routers) to each other using the provided 20.10.100.0/24
         self.addLink(rA, rB, intfName1='rA-eth2', intfName2='rB-eth2', params1={'ip': '20.10.100.1/24'}, params2={'ip': '20.10.100.4/24'})
         self.addLink(rA, rC, intfName1='rA-eth3', intfName2='rC-eth2', params1={'ip': '20.10.100.2/24'}, params2={'ip': '20.10.100.5/24'})
         self.addLink(rB, rC, intfName1='rB-eth3', intfName2='rC-eth3', params1={'ip': '20.10.100.3/24'}, params2={'ip': '20.10.100.6/24'})
 
-
 def run():
+    """
+    Create network for this assignment. Start the network running, then open the mininet CLI to support 
+    running commands and examing network properties. Close the network when the CLI is exited.
+    """
     topo = NetworkTopo()
     net = Mininet(topo=topo)
 
@@ -73,7 +92,7 @@ def run():
     rB = net.get('rB')
     rC = net.get('rC')
 
-    # Add routes on hosts
+    # Add routes on hosts after the network has been started
     hA1.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')
     hA1.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')
     hA2.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')
@@ -89,6 +108,7 @@ def run():
     hC2.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')
     hC2.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')
 
+    # Add routes between routers after the network has been started
     rA.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.4')        
     rA.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.5')        
     rB.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.1')        
@@ -96,9 +116,11 @@ def run():
     rC.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.3')        
     rC.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.2')        
 
+    # Start the CLI
     CLI(net)
-    net.stop()
 
+    # Terminate the network when the CLI is exited
+    net.stop()
 
 if __name__ == '__main__':
     setLogLevel('info')
