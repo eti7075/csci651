@@ -50,6 +50,15 @@ def run():
     topo = MultiLANWithRouters()
     net = Mininet(topo=topo, switch=OVSSwitch, controller=None)
     net.start()
+    
+    rA = net.get('rA')
+    rB = net.get('rB')
+    rC = net.get('rC')
+
+    # Configure router interfaces (assumes they only have one interface each for now)
+    rA.setIP('20.10.172.129/26', intf=rA.defaultIntf())
+    rB.setIP('20.10.172.1/25', intf=rB.defaultIntf())
+    rC.setIP('20.10.172.193/27', intf=rC.defaultIntf())
 
     print("\nRouters connected to each LAN.")
     print("Try pinging between hosts in each LAN, like: hA1 ping hA2")
