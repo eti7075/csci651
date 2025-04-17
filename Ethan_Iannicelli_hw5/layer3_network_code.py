@@ -51,6 +51,8 @@ class NetworkTopo(Topo):
 
         # Task 3
         self.addLink(rA, rB, intfName1='ra-eth2', intfName2='rB-eth2', params1={'ip': '20.10.100.1/24'}, params2={'ip': '20.10.100.2/24'})
+        self.addLink(rA, rC, intfName1='ra-eth3', intfName2='rC-eth2', params1={'ip': '20.10.100.1/24'}, params2={'ip': '20.10.100.3/24'})
+        self.addLink(rB, rC, intfName1='rb-eth3', intfName2='rC-eth3', params1={'ip': '20.10.100.2/24'}, params2={'ip': '20.10.100.3/24'})
 
 
 def run():
@@ -72,8 +74,27 @@ def run():
     rC = net.get('rC')
 
     # Add routes on hosts
-    hA1.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')     # To LAN B
-    rA.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.1')        # LAN B via rB
+    hA1.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')
+    hA1.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')
+    hA2.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')
+    hA2.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')
+    
+    hB1.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')
+    hB1.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')
+    hB2.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')
+    hB2.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')
+
+    hB1.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')
+    hB1.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')
+    hC2.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')
+    hC2.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')
+
+    rA.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.2')        
+    rA.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.128 gw 20.10.100.3')        
+    rB.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.128 gw 20.10.100.1')        
+    rB.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.128 gw 20.10.100.3')        
+    rC.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.2')        
+    rC.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.128 gw 20.10.100.1')        
 
     CLI(net)
     net.stop()
