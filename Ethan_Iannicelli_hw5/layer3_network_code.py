@@ -89,12 +89,12 @@ def run():
     hC2.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')
     hC2.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')
 
-    rA.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.2')        
-    rA.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.3')        
+    rA.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.4')        
+    rA.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.5')        
     rB.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.1')        
-    rB.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.3')        
+    rB.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.5')        
     rC.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.2')        
-    rC.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.1')        
+    rC.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.3')        
 
     CLI(net)
     net.stop()
