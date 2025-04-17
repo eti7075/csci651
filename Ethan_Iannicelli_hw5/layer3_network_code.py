@@ -68,32 +68,31 @@ def run():
     rC = net.get('rC')
 
     # Add routes on hosts
-    hA1.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')     # To LAN B
-    hA1.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')   # To LAN C
-    hA2.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')     # To LAN B
-    hA2.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')   # To LAN C
+    hA1.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')     # To LAN B
+    hA1.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')   # To LAN C
+    hA2.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')     # To LAN B
+    hA2.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')   # To LAN C
 
-    hB1.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')     # To LAN A
-    hB1.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')     # To LAN C
-    hB2.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')     # To LAN A
-    hB2.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')     # To LAN C
+    hB1.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')     # To LAN A
+    hB1.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')     # To LAN C
+    hB2.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')     # To LAN A
+    hB2.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')     # To LAN C
 
-
-    hC1.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')     # To LAN B
-    hC1.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')   # To LAN A
-    hC2.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')     # To LAN B
-    hC2.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')   # To LAN A
+    hC1.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')     # To LAN B
+    hC1.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')   # To LAN A
+    hC2.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')     # To LAN B
+    hC2.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')   # To LAN A
 
     # Add routes on routers
-    rA.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.1')        # LAN B via rB
-    rA.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')      # LAN C via rB
+    rA.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.1')        # LAN B via rB
+    rA.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')      # LAN C via rB
+ 
+    rB.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.129')    # LAN A via rA
+    rB.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.193')    # LAN C via rC
 
-    rB.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.129')    # LAN A via rA
-    rB.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.193')    # LAN C via rC
-
-    rC.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.1')        # LAN B via rB
-    rC.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')      # LAN A via rB
-
+    rC.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.1')        # LAN B via rB
+    rC.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')      # LAN A via rB
+    
     CLI(net)
     net.stop()
 
