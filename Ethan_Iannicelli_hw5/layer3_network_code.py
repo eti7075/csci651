@@ -7,21 +7,21 @@ from mininet.log import setLogLevel
 class MultiLAN(Topo):
     def build(self):
         # LAN A
-        sA = self.addSwitch('sA')
+        sA = self.addSwitch('s1')
         hA1 = self.addHost('hA1', ip='20.10.172.129/26')
         hA2 = self.addHost('hA2', ip='20.10.172.130/26')
         self.addLink(hA1, sA)
         self.addLink(hA2, sA)
 
         # LAN B
-        sB = self.addSwitch('sB')
+        sB = self.addSwitch('s2')
         hB1 = self.addHost('hB1', ip='20.10.172.1/25')
         hB2 = self.addHost('hB2', ip='20.10.172.2/25')
         self.addLink(hB1, sB)
         self.addLink(hB2, sB)
 
         # LAN C
-        sC = self.addSwitch('sC')
+        sC = self.addSwitch('s3')
         hC1 = self.addHost('hC1', ip='20.10.172.193/27')
         hC2 = self.addHost('hC2', ip='20.10.172.194/27')
         self.addLink(hC1, sC)
