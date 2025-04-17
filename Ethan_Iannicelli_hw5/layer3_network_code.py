@@ -49,6 +49,10 @@ class NetworkTopo(Topo):
         self.addLink(hC1, s3)
         self.addLink(hC2, s3)
 
+        # Task 3
+        self.addLink(rA, rB, intfName1='ra-eth2', intfName2='rB-eth2', params1={'ip': '20.10.100.1/24'}, params2={'ip': '20.10.100.2/24'})
+
+
 def run():
     topo = NetworkTopo()
     net = Mininet(topo=topo)
