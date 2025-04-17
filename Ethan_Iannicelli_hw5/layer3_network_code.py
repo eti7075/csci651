@@ -27,7 +27,7 @@ class NetworkTopo(Topo):
         self.addLink(hA1, s1)
         self.addLink(hA2, s1)
 
-        rB = self.addNode('rB', cls=LinuxRouter, ip='20.10.172.0/25')
+        rB = self.addNode('rB', cls=LinuxRouter, ip='20.10.172.1/25')
 
         s2 = self.addSwitch('s2')
         self.addLink(s2, rB, intfName2='rB-eth1', params2={'ip': '20.10.172.1/25'})
@@ -43,7 +43,7 @@ class NetworkTopo(Topo):
         s3 = self.addSwitch('s3')
         self.addLink(s3, rC, intfName2='rC-eth1', params2={'ip': '20.10.172.193/27'})
 
-        # Hosts with IPs in the /26 subnet and rA as gateway
+        # Hosts with IPs in the /27 subnet and rC as gateway
         hC1 = self.addHost(name='hC1', ip='20.10.172.194/27', defaultRoute='via 20.10.172.193')
         hC2 = self.addHost(name='hC2', ip='20.10.172.195/27', defaultRoute='via 20.10.172.193')
         self.addLink(hC1, s3)
