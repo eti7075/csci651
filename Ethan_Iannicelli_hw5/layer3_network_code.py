@@ -54,8 +54,49 @@ def run():
     net = Mininet(topo=topo)
 
     net.start()
+
+    # Get hosts and routers
+    hA1 = net.get('hA1')
+    hA2 = net.get('hA2')
+    hB1 = net.get('hB1')
+    hB2 = net.get('hB2')
+    hC1 = net.get('hC1')
+    hC2 = net.get('hC2')
+
+    rA = net.get('rA')
+    rB = net.get('rB')
+    rC = net.get('rC')
+
+    # Add routes on hosts
+    hA1.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')     # To LAN B
+    hA1.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')   # To LAN C
+    hA2.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.129')     # To LAN B
+    hA2.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.129')   # To LAN C
+
+    hB1.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')     # To LAN A
+    hB1.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')     # To LAN C
+    hB2.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')     # To LAN A
+    hB2.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')     # To LAN C
+
+
+    hC1.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')     # To LAN B
+    hC1.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')   # To LAN A
+    hC2.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.193')     # To LAN B
+    hC2.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.193')   # To LAN A
+
+    # Add routes on routers
+    rA.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.1')        # LAN B via rB
+    rA.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.1')      # LAN C via rB
+
+    rB.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.129')    # LAN A via rA
+    rB.cmd('route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.172.193')    # LAN C via rC
+
+    rC.cmd('route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.172.1')        # LAN B via rB
+    rC.cmd('route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.172.1')      # LAN A via rB
+
     CLI(net)
     net.stop()
+
 
 if __name__ == '__main__':
     setLogLevel('info')
