@@ -67,7 +67,7 @@ class NetworkTopo(Topo):
 
         # Task 3 - connect all three LANs (routers) to each other using the provided 20.10.100.0/24
         self.addLink(rA, rB, intfName1='rA-eth2', intfName2='rB-eth2', params1={'ip': '20.10.100.1/24'}, params2={'ip': '20.10.100.4/24'})
-        self.addLink(rA, rC, intfName1='rA-eth3', intfName2='rC-eth2', params1={'ip': '20.10.100.2/24'}, params2={'ip': '20.10.100.5/24'})
+        # self.addLink(rA, rC, intfName1='rA-eth3', intfName2='rC-eth2', params1={'ip': '20.10.100.2/24'}, params2={'ip': '20.10.100.5/24'})
         self.addLink(rB, rC, intfName1='rB-eth3', intfName2='rC-eth3', params1={'ip': '20.10.100.3/24'}, params2={'ip': '20.10.100.6/24'})
 
 def run():
@@ -110,11 +110,11 @@ def run():
 
     # Add routes between routers after the network has been started
     rA.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.4')        
-    rA.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.5')        
+    # rA.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.5')        
     rB.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.1')        
     rB.cmd('sudo route add -net 20.10.172.192 netmask 255.255.255.224 gw 20.10.100.6')        
     rC.cmd('sudo route add -net 20.10.172.0 netmask 255.255.255.128 gw 20.10.100.3')        
-    rC.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.2')        
+    # rC.cmd('sudo route add -net 20.10.172.128 netmask 255.255.255.192 gw 20.10.100.2')        
 
     # Start the CLI
     CLI(net)
