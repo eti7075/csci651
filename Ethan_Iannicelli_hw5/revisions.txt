@@ -1,0 +1,192 @@
+commit 14c1939175eda1e993abffbfa6989213cb5620c4
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Fri Apr 18 20:38:19 2025 -0400
+
+    auto docs and readme done
+
+commit 9a08b5fac2bc444002856187ee5233e7f4cb44e2
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Fri Apr 18 20:03:40 2025 -0400
+
+    requirements.txt and report
+
+commit 0f891d2448e3ab81127065b627b51ac7054b9253
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Fri Apr 18 16:37:40 2025 -0400
+
+    use more specific ip addresses between routers
+
+commit a09db6cf80d9adb0af8b798dd8466782b5c43ea9
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Fri Apr 18 16:26:37 2025 -0400
+
+    trying for a path connection
+
+commit 233c8f3a1297fa5a4d16df5a7e97ef8bf494c38f
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Thu Apr 17 09:33:57 2025 -0400
+
+    commented code
+
+commit c242b280273c3c67fecb71fc30e6016925903f5b
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 22:32:32 2025 -0400
+
+    switch addrs
+
+commit 17d1e0a39df2b6e7f22c06cdef27f28fc2f7adfe
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 22:29:30 2025 -0400
+
+    fix typo
+
+commit 56db7232b1a41bdbecbedd858fa455bccd762ea9
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 22:06:32 2025 -0400
+
+    fix gws
+
+commit 40e12d23b374c9dbb6265e888fef3d20868a88ad
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 22:04:48 2025 -0400
+
+    fix ip -> intf
+
+commit 1dd9c449845419f235156e29c1464af94a6d52a9
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 22:00:56 2025 -0400
+
+    conn router C
+
+commit 0c58cae07931e02d0847422c637d19061a6bc8fb
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:58:37 2025 -0400
+
+    fix typoes p2
+
+commit cd5cc6730f03e6cd01a1d96b1b08731a551fe9eb
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:50:54 2025 -0400
+
+    fix typos
+
+commit a82d9d42b8827142a43beebf31274b2a4501107d
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:45:09 2025 -0400
+
+    connect all routers
+
+commit c1fc3c316a4ffd3742ea2f263ea0058085519e0a
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:33:37 2025 -0400
+
+    add link bw rs
+
+commit f4354966fa20d6cbbd825d1d191e6d74aa582321
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:25:25 2025 -0400
+
+    attempt to connect ha1 to rb
+
+commit 7c971ba2c0ecf6b05f5c169acabed71cc182fd9b
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:19:02 2025 -0400
+
+    fix gw and netaddr
+
+commit c65f03746c7710d4c1f71c1d85856afede6d380e
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:16:48 2025 -0400
+
+    add sudo
+
+commit 3bfbb2bf885fc40043e0c3d1c312a116d84ff08b
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:14:53 2025 -0400
+
+    add routes between routers
+
+commit 9a3f08723eda7a8c704e5544427f8a877601c2d7
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 21:05:06 2025 -0400
+
+    fix router b
+
+commit 968a2ac9bfaf4601d5beebadd852986b7f3ce173
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:58:10 2025 -0400
+
+    added other 2 routers
+
+commit d244504ea541eb7534225e1bd65146eb88edcd4c
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:49:42 2025 -0400
+
+    reorder things
+
+commit 727fbcaea0aa89ab64c9e1a5cf9d8c280e1351d2
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:33:16 2025 -0400
+
+    try to POC for router A
+
+commit 040d0848794a322316dcec3f0667ff04270819e3
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:25:06 2025 -0400
+
+    manually set interface for routers
+
+commit 888b3713065dccbf4e8f49b0a5951389ac56c37d
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:21:16 2025 -0400
+
+    add routers
+
+commit 48d5b75ea8f9d6492c651f231d33ae0497d70ce4
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:17:10 2025 -0400
+
+    renamed switches
+
+commit 76d14655c13d5aa3499641ca2ad678a088c10a2f
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:16:25 2025 -0400
+
+    add other lans
+
+commit 9ae1348ca4aae6b9a140076e84fb478899fc4614
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Wed Apr 16 20:13:18 2025 -0400
+
+    get one lan working
+
+commit 0345dd496c47f2ca46c0d1f57f6bc8d6ea7ac1a6
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Tue Apr 15 18:15:49 2025 -0400
+
+    trouble shooting intra host conn
+
+commit 5f919ca50b6a59b70b47fb4560325e13915a5adb
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Tue Apr 15 17:05:29 2025 -0400
+
+    task 2 cont
+
+commit 63a30f1fb361691741d2db13ee51d2d982f3b78a
+Author: ethaniannicelli <etiannicelli@gmail.com>
+Date:   Tue Apr 15 16:13:28 2025 -0400
+
+    task 2 start
+
+commit e46e044a973a013b10fe8618f98444fae2971586
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Tue Apr 15 15:46:58 2025 -0400
+
+    task 1
+
+commit 1a7fa1c9d6c750807c00f407bb13e572ed9296c7
+Author: eiannicelli <eti7075@rit.edu>
+Date:   Mon Apr 14 11:50:48 2025 -0400
+
+    started hw5
+
